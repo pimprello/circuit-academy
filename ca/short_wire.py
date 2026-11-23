@@ -36,7 +36,7 @@ def beat_durations():
             out.append(json.load(open(f))["duration"] + 0.35)
         else:
             out.append(len(text.split()) / WPS + 0.6)
-    out[-1] = max(out[-1], 7.0)    # the cinematic ending needs room to breathe
+    out[-1] = max(out[-1], 9.2)    # the cinematic ending needs room to breathe
     return out
 
 
@@ -143,6 +143,18 @@ def stop_flow(scene, dots, tr):
     dots.clear_updaters()
 
 
+def bell_icon(colour=WHITE):
+    """Notification bell: dome + flared skirt, knob on top, clapper below."""
+    pts = [(-0.34, -0.22), (-0.27, -0.12), (-0.24, 0.08), (-0.18, 0.24), (0, 0.32), (0.18, 0.24),
+           (0.24, 0.08), (0.27, -0.12), (0.34, -0.22)]
+    body = VMobject(stroke_width=0, fill_color=colour, fill_opacity=1)
+    body.set_points_smoothly([P(*p) for p in pts])
+    body.add_line_to(P(-0.34, -0.22))
+    knob = Circle(radius=0.05, stroke_width=0, fill_color=colour, fill_opacity=1).move_to(P(0, 0.35))
+    clap = Circle(radius=0.07, stroke_width=0, fill_color=colour, fill_opacity=1).move_to(P(0, -0.3))
+    return VGroup(body, knob, clap)
+
+
 def cursor():
     pts = [(0, 0), (0, -0.78), (0.19, -0.6), (0.33, -0.92), (0.45, -0.86), (0.31, -0.56), (0.56, -0.56)]
     arrow = Polygon(*[P(*p) for p in pts], stroke_color=BLACK, stroke_width=4, fill_color=WHITE, fill_opacity=1)
@@ -164,6 +176,8 @@ class WireShort(Scene):
         self.header = VGroup(neon(accent, S.CYAN), accent, title)
         self.title, self.accent = title, accent
 
+        self.header_home = self.header.get_center()
+        self.hook_t0 = self.renderer.time
         for (key, _), d in zip(BEATS, durs):
             t0 = self.renderer.time
             getattr(self, "beat_" + key)(d)
@@ -173,17 +187,67 @@ class WireShort(Scene):
 
     # ── beats ────────────────────────────────────────────────────────────
     def beat_hook(self, d):
+        """First seconds: motion from frame one. Two live wires, an electric arc cracking between them,
+        current racing along, a white flash and the title slamming in."""
+        left = copper_wire(3.4).move_to(P(-2.35, 0.6))
+        right = copper_wire(3.4).rotate(PI).move_to(P(2.35, 0.6))
+        tip_l = left[0].get_right() + LEFT * 0.05
+        tip_r = right[0].get_left() + RIGHT * 0.05
+        stage = VGroup(left, right).scale(1.2, about_point=P(0, 0.6))
+        tip_l, tip_r = left[0].get_right() + LEFT * 0.05, right[0].get_left() + RIGHT * 0.05
+
+        def bolt():
+            pts = [tip_l]
+            n = 9
+            for i in range(1, n):
+                q = tip_l + (tip_r - tip_l) * i / n
+                pts.append(q + UP * np.random.uniform(-0.38, 0.38))
+            pts.append(tip_r)
+            paths = [pts]
+            for _ in range(2):   # little forks crackling off the main bolt
+                k = np.random.randint(2, n - 1)
+                p0 = pts[k]
+                f = [p0]
+                for j in range(3):
+                    f.append(f[-1] + P(np.random.uniform(-0.12, 0.2), np.random.choice([-1, 1]) * np.random.uniform(0.1, 0.22)))
+                paths.append(f)
+            g = VGroup()
+            for path in paths:
+                for w, o, c in ((24, 0.10, S.CYAN), (11, 0.35, S.CYAN), (4, 1, WHITE)):
+                    m = VMobject(stroke_color=c, stroke_width=w * (1 if path is pts else 0.6), stroke_opacity=o)
+                    m.set_points_as_corners(path)
+                    g.add(m)
+            return g
+
+        arc = bolt()
+        arc.add_updater(lambda m, dt: m.become(bolt()))
+        spark_glow = glow_disc(S.CYAN, 1.2, 10, 0.18).move_to((tip_l + tip_r) / 2)
+        # current racing along both wires toward the gap
+        run_l = Line(left.get_left() + RIGHT * 0.3, tip_l)
+        run_r = Line(right.get_right() + LEFT * 0.3, tip_r)
+        dl, tl = flow_dots(run_l, 6, 0.9, S.YELLOW, 0.06)
+        dr, tr = flow_dots(run_r, 6, 0.9, S.YELLOW, 0.06)
+        self.add(stage, spark_glow, arc, dl, tl, dr, tr)
+        # frame one is already busy: push in slightly while the arc crackles
+        self.play(stage.animate.scale(0.9, about_point=P(0, 0.6)), spark_glow.animate.scale(1.3),
+                  run_time=0.6, rate_func=smooth)
+        # white flash + title slams down with a small screen shake
+        flash = Rectangle(width=9, height=FH + 1, stroke_width=0, fill_color=WHITE, fill_opacity=0.85)
+        self.title.scale(1.8).set_opacity(0)
+        self.add(flash)
+        self.play(FadeOut(flash), self.title.animate.scale(1 / 1.8).set_opacity(1), Create(self.accent),
+                  FadeIn(self.header[0]), run_time=0.35, rate_func=rate_functions.ease_out_back)
+        for v in (P(0.08, -0.05), P(-0.12, 0.06), P(0.06, 0.04), P(-0.02, -0.05)):
+            self.play(stage.animate.shift(v), self.header.animate.shift(v * 0.5), run_time=0.045)
+        self.play(stage.animate.move_to(P(0, 0.6)), self.header.animate.move_to(self.header_home), run_time=0.08)
+        rest = d - (self.renderer.time - self.hook_t0) - 0.55
+        if rest > 0.05:
+            self.wait(rest)
+        # wires join: the arc closes into one wire for the next beat
+        arc.clear_updaters()
+        stop_flow(self, dl, tl); stop_flow(self, dr, tr)
         wire = copper_wire(6.4).rotate(-12 * DEGREES).move_to(P(0, 0.8))
-        tip = wire[0].get_corner(RIGHT) + LEFT * 0.12 + DOWN * 0.02
-        spark = VGroup(*[Line(ORIGIN, (0.35 + 0.25 * (i % 2)) * np.array([np.cos(a), np.sin(a), 0]),
-                              stroke_color=S.YELLOW, stroke_width=6) for i, a in enumerate(np.linspace(0, TAU, 13)[:-1])])
-        spark.move_to(tip)
-        sg = glow_disc(S.YELLOW, 1.0, 10, 0.25).move_to(tip)
-        self.play(FadeIn(self.title, shift=DOWN * 0.4, scale=1.15), Create(self.accent), FadeIn(self.header[0]),
-                  FadeIn(wire, shift=LEFT * 2.5), run_time=0.8, rate_func=smooth)
-        self.play(GrowFromCenter(spark), FadeIn(sg, scale=0.3), run_time=0.35)
-        self.play(spark.animate.scale(1.6).set_opacity(0), sg.animate.set_opacity(0), run_time=0.6)
-        self.play(wire.animate.scale(1.06).shift(UP * 0.1), run_time=max(0.3, d - 1.75), rate_func=there_and_back_with_pause)
+        self.play(FadeOut(VGroup(arc, spark_glow, dl, dr)), ReplacementTransform(stage, wire), run_time=0.55)
         self.hook_wire = wire
 
     def beat_inside(self, d):
@@ -266,54 +330,71 @@ class WireShort(Scene):
         self.play(FadeOut(VGroup(thin, thick, lt, lk, d1, heat, *[r[0] for r in rows])), run_time=0.45)
 
     def beat_outro(self, d):
-        """Cinematic ending (no captions): letterbox, dim, next-episode reveal, then the subscribe click."""
+        """Cinematic ending (no captions): next-episode reveal, then subscribe + bell with a mouse."""
         t0 = self.renderer.time
         dim = Rectangle(width=9, height=FH + 1, stroke_width=0, fill_color="#02040A", fill_opacity=0)
-        bar_h = 1.35
-        top = Rectangle(width=9, height=bar_h, stroke_width=0, fill_color=BLACK, fill_opacity=1).move_to(P(0, FH / 2 + bar_h / 2))
-        bot = top.copy().move_to(P(0, -FH / 2 - bar_h / 2))
-        self.play(FadeOut(self.header, shift=UP * 0.3), dim.animate.set_fill(opacity=0.55),
-                  top.animate.shift(DOWN * bar_h), bot.animate.shift(UP * bar_h), run_time=0.7, rate_func=smooth)
+        self.add(dim)
+        self.play(FadeOut(self.header, shift=UP * 0.3), dim.animate.set_fill(opacity=0.45), run_time=0.6, rate_func=smooth)
 
         nxt = Text("N E X T   T I M E", font=S.BODY_FONT, weight=BOLD, font_size=30, color=S.MUTED).move_to(P(0, 4.15))
         line_l = Line(P(-3.3, 4.15), P(-2.35, 4.15), stroke_color=S.MUTED, stroke_width=2)
         line_r = Line(P(2.35, 4.15), P(3.3, 4.15), stroke_color=S.MUTED, stroke_width=2)
-        self.play(FadeIn(nxt, shift=UP * 0.15), Create(line_l), Create(line_r), run_time=0.6)
+        self.play(FadeIn(nxt, shift=UP * 0.15), Create(line_l), Create(line_r), run_time=0.55)
 
         cell = Battery(cells=1).scale(1.7).move_to(P(0, 2.5))
         cg = glow_disc(S.GREEN, 1.3, 12, 0.05).move_to(cell)
-        self.play(Create(cell), run_time=0.7)
-        self.play(FadeIn(cg, scale=0.4), Flash(cell.get_center(), color=S.GREEN, line_length=0.35, flash_radius=1.25,
-                                                num_lines=14), run_time=0.5)
+        self.play(Create(cell), FadeIn(cg, scale=0.5), run_time=0.7)
 
         name = H("THE CELL", 160, S.GREEN).move_to(P(0, 0.55))
         name_glow = name.copy().set_fill(opacity=0).set_stroke(S.GREEN, 12, 0.06)
         sweep = VGroup(*[Rectangle(width=w, height=2.4, stroke_width=0, fill_color=WHITE, fill_opacity=o)
-                         for w, o in ((0.9, 0.06), (0.45, 0.12), (0.15, 0.3))]).rotate(-18 * DEGREES).move_to(P(-4.6, 0.55))
-        self.play(FadeIn(name, scale=1.2), FadeIn(name_glow), run_time=0.55, rate_func=rush_from)
+                         for w, o in ((0.9, 0.05), (0.45, 0.09), (0.15, 0.22))]).rotate(-18 * DEGREES).move_to(P(-4.6, 0.55))
+        self.play(FadeIn(name, scale=1.2), FadeIn(name_glow), run_time=0.5, rate_func=rush_from)
         self.add(sweep)
-        self.play(sweep.animate.move_to(P(4.6, 0.55)), run_time=0.7, rate_func=smooth)
+        self.play(sweep.animate.move_to(P(4.6, 0.55)), run_time=0.65, rate_func=smooth)
         self.remove(sweep)
 
-        btn = RoundedRectangle(width=5.0, height=1.3, corner_radius=0.65, stroke_width=0,
-                               fill_color="#FF1E1E", fill_opacity=1).move_to(P(0, -1.6))
-        btn_t = B("SUBSCRIBE", 52, WHITE).move_to(btn)
-        btn_glow = glow_disc("#FF1E1E", 1.5, 10, 0.05).stretch(1.9, 0).move_to(btn)
-        self.play(FadeIn(btn_glow), FadeIn(VGroup(btn, btn_t), shift=UP * 0.5, scale=0.85), run_time=0.45, rate_func=rush_from)
+        # subscribe button pops in with a little bounce
+        btn = RoundedRectangle(width=4.6, height=1.25, corner_radius=0.62, stroke_width=0,
+                               fill_color="#FF1E1E", fill_opacity=1)
+        shine = RoundedRectangle(width=4.3, height=0.42, corner_radius=0.21, stroke_width=0,
+                                 fill_color=WHITE, fill_opacity=0.14).shift(UP * 0.3)
+        btn_t = B("SUBSCRIBE", 50, WHITE)
+        btn_glow = glow_disc("#FF1E1E", 1.5, 10, 0.05).stretch(1.9, 0)
+        sub = VGroup(btn_glow, btn, shine, btn_t).move_to(P(0, -1.55))
+        self.play(FadeIn(sub, scale=0.4), run_time=0.5, rate_func=rate_functions.ease_out_back)
 
-        cur = cursor().move_to(P(3.3, -4.1))
-        target = btn.get_center() + P(2.15, -0.42)
-        self.play(FadeIn(cur), run_time=0.15)
-        self.play(cur.animate.move_to(target + P(0.27, -0.45)), run_time=0.85, rate_func=smooth)
-        self.wait(0.12)
-        self.play(cur.animate.scale(0.82), btn.animate.scale(0.94), btn_t.animate.scale(0.94), run_time=0.1)
+        # the mouse glides in on a curve, hovers (button brightens), clicks
+        cur = cursor().move_to(P(3.0, -4.0))
+        target = btn.get_center() + P(1.2, -0.3)
+        path = CubicBezier(cur.get_center(), P(3.4, -2.6), target + P(1.4, -0.9), target + P(0.27, -0.45))
+        self.play(FadeIn(cur, shift=UP * 0.2), run_time=0.2)
+        self.play(MoveAlongPath(cur, path), run_time=0.85, rate_func=smooth)
+        self.play(sub.animate.scale(1.05), run_time=0.15)
+        self.play(cur.animate.scale(0.8), sub.animate.scale(0.92 / 1.05), run_time=0.08)
         ripple = Circle(radius=0.15, stroke_color=WHITE, stroke_width=6).move_to(target)
-        sparks = VGroup(*[Line(ORIGIN, 0.3 * np.array([np.cos(a), np.sin(a), 0]), stroke_color=S.YELLOW, stroke_width=5)
-                          .shift(0.5 * np.array([np.cos(a), np.sin(a), 0])) for a in np.linspace(0, TAU, 11)[:-1]]).move_to(target)
-        done_t = B("SUBSCRIBED ✓", 42, "#D6DBE6").move_to(btn)
-        self.play(cur.animate.scale(1 / 0.82), btn.animate.scale(1 / 0.94).set_fill("#2A3247"),
-                  Transform(btn_t, done_t), btn_glow.animate.set_opacity(0),
-                  ripple.animate.scale(6).set_stroke(opacity=0),
-                  sparks.animate.scale(1.8).set_opacity(0), run_time=0.5)
-        self.play(cur.animate.shift(P(0.6, -0.8)).set_opacity(0), run_time=0.5)
-        self.wait(max(0, d - (self.renderer.time - t0)))
+        sparks = VGroup(*[Line(ORIGIN, 0.28 * np.array([np.cos(a), np.sin(a), 0]), stroke_color=c, stroke_width=5)
+                          .shift(0.45 * np.array([np.cos(a), np.sin(a), 0]))
+                          for a, c in zip(np.linspace(0, TAU, 13)[:-1], [S.YELLOW, S.CYAN, S.PINK] * 4)]).move_to(target)
+        self.play(cur.animate.scale(1 / 0.8), sub.animate.scale(1 / 0.92),
+                  ripple.animate.scale(6).set_stroke(opacity=0), sparks.animate.scale(2.0).set_opacity(0), run_time=0.35)
+        done_t = B("SUBSCRIBED", 46, "#D6DBE6").move_to(btn.get_center())
+        self.play(btn.animate.set_fill("#2A3247"), shine.animate.set_fill(opacity=0.05),
+                  FadeOut(btn_glow), Transform(btn_t, done_t), run_time=0.3)
+
+        # bell slides in beside the button; the mouse hops over and rings it
+        bell = bell_icon().scale(0.95)
+        bell_bg = Circle(radius=0.62, stroke_width=0, fill_color="#2A3247", fill_opacity=1)
+        bell_g = VGroup(bell_bg, bell)
+        self.play(sub.animate.shift(LEFT * 0.7), FadeIn(bell_g.move_to(P(2.35, -1.55)), shift=LEFT * 0.4, scale=0.6),
+                  cur.animate.shift(LEFT * 0.7), run_time=0.4)
+        bt = bell_g.get_center() + P(0.12, -0.15)
+        self.play(cur.animate.move_to(bt + P(0.27, -0.45)), run_time=0.45, rate_func=smooth)
+        self.play(cur.animate.scale(0.8), run_time=0.08)
+        ring2 = Circle(radius=0.62, stroke_color=S.YELLOW, stroke_width=5).move_to(bell_g)
+        self.play(cur.animate.scale(1 / 0.8), bell_bg.animate.set_fill(S.YELLOW), bell.animate.set_fill("#1A1F2E"),
+                  ring2.animate.scale(1.8).set_stroke(opacity=0), run_time=0.3)
+        self.play(Wiggle(bell, scale_value=1.15, rotation_angle=0.12 * TAU, n_wiggles=4), run_time=0.7)
+        self.play(cur.animate.shift(P(0.7, -0.9)).set_opacity(0), run_time=0.45)
+        if d - (self.renderer.time - t0) > 0.03:
+            self.wait(d - (self.renderer.time - t0))

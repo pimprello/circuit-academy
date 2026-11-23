@@ -35,13 +35,13 @@ jobs:
         run: python make_short.py
       - name: Save to the previews branch
         run: |
-          mkdir -p /tmp/p && cp out/wire.mp4 /tmp/p/wire.mp4
+          mkdir -p /tmp/p && cp out/wire.mp4 out/thumb_wire.jpg /tmp/p/
           git config user.name "preview-bot"
           git config user.email "preview-bot@users.noreply.github.com"
           git fetch origin previews || true
           git checkout --orphan previews-new
           git rm -rq --cached . && rm -rf -- * .github .gitignore
-          mkdir previews && cp /tmp/p/wire.mp4 previews/
+          mkdir previews && cp /tmp/p/* previews/
           echo "Built from ${GITHUB_SHA}" > previews/README.md
           git add previews && git commit -qm "Preview from ${GITHUB_SHA::7}"
           git push -f origin previews-new:previews

@@ -56,3 +56,9 @@ else:
 cmd += ["-c:v", "libx264", "-crf", "18", "-preset", "veryfast", "-pix_fmt", "yuv420p", "-shortest", "out/wire.mp4"]
 subprocess.run(cmd, check=True)
 print("done: out/wire.mp4", "(with narrator)" if voiced else "(silent)")
+
+# 5. custom thumbnail
+subprocess.run(["manim", "-s", "-r", "1080,1920", "--disable_caching", "-o", "thumb", "ca/thumb_wire.py", "ThumbWire"],
+               check=True, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", "media/images/thumb_wire/thumb.png", "-q:v", "2", "out/thumb_wire.jpg"], check=True)
+print("done: out/thumb_wire.jpg")
