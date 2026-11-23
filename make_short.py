@@ -49,11 +49,11 @@ if voiced:
     delays = "".join(f"[{i + 1}:a]adelay={int(s * 1000)}|{int(s * 1000)}[a{i}];" for i, s in enumerate(starts))
     mix = "".join(f"[a{i}]" for i in range(len(BEATS)))
     fc = (f"[0:v]subtitles=out/wire.ass:fontsdir=assets/fonts[v];{delays}{mix}amix=inputs={len(BEATS)}:normalize=0,"
-          f"loudnorm=I=-14:TP=-1.5:LRA=11,apad[a]")
+          f"loudnorm=I=-14:TP=-1.5:LRA=11,apad=whole_dur={sum(durs):.3f}[a]")
     cmd += ["-filter_complex", fc, "-map", "[v]", "-map", "[a]", "-c:a", "aac", "-b:a", "192k", "-ar", "48000"]
 else:
     cmd += ["-vf", "subtitles=out/wire.ass:fontsdir=assets/fonts"]
-cmd += ["-c:v", "libx264", "-crf", "18", "-preset", "veryfast", "-pix_fmt", "yuv420p", "-shortest", "out/wire.mp4"]
+cmd += ["-c:v", "libx264", "-crf", "18", "-preset", "veryfast", "-pix_fmt", "yuv420p", "-t", f"{sum(durs):.3f}", "out/wire.mp4"]
 subprocess.run(cmd, check=True)
 print("done: out/wire.mp4", "(with narrator)" if voiced else "(silent)")
 
