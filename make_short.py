@@ -49,7 +49,7 @@ if voiced:
     delays = "".join(f"[{i + 1}:a]adelay={int(s * 1000)}|{int(s * 1000)}[a{i}];" for i, s in enumerate(starts))
     mix = "".join(f"[a{i}]" for i in range(len(BEATS)))
     fc = (f"[0:v]subtitles=out/wire.ass:fontsdir=assets/fonts[v];{delays}{mix}amix=inputs={len(BEATS)}:normalize=0,"
-          f"loudnorm=I=-14:TP=-1.5:LRA=11[a]")
+          f"loudnorm=I=-14:TP=-1.5:LRA=11,apad[a]")
     cmd += ["-filter_complex", fc, "-map", "[v]", "-map", "[a]", "-c:a", "aac", "-b:a", "192k", "-ar", "48000"]
 else:
     cmd += ["-vf", "subtitles=out/wire.ass:fontsdir=assets/fonts"]
