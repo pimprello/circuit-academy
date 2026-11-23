@@ -1,0 +1,4 @@
+manim==0.22.1
+edge-tts>=7.0
+pillow
+numpy

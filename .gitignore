@@ -1,0 +1,5 @@
+media/
+out/
+narration/
+__pycache__/
+*.pyc

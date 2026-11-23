@@ -1,0 +1,47 @@
+name: Make preview video
+
+# Builds the current Short WITH the narrator voice (the voice service is reachable from GitHub,
+# not from Claude's workspace) and saves it to the "previews" branch as previews/wire.mp4.
+# Runs on every push to main, or by hand from the Actions tab.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: preview
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: System packages (ffmpeg, Pango for text, fonts)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg libpango1.0-dev libcairo2-dev pkg-config fonts-inter fonts-jetbrains-mono
+          mkdir -p ~/.fonts && cp assets/fonts/*.ttf ~/.fonts/ && fc-cache -f
+      - run: pip install -r requirements.txt
+      - name: Make the video
+        run: python make_short.py
+      - name: Save to the previews branch
+        run: |
+          mkdir -p /tmp/p && cp out/wire.mp4 /tmp/p/wire.mp4
+          git config user.name "preview-bot"
+          git config user.email "preview-bot@users.noreply.github.com"
+          git fetch origin previews || true
+          git checkout --orphan previews-new
+          git rm -rq --cached . && rm -rf -- * .github .gitignore
+          mkdir previews && cp /tmp/p/wire.mp4 previews/
+          echo "Built from ${GITHUB_SHA}" > previews/README.md
+          git add previews && git commit -qm "Preview from ${GITHUB_SHA::7}"
+          git push -f origin previews-new:previews
