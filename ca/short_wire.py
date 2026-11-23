@@ -281,13 +281,13 @@ class WireShort(Scene):
         self.play(FadeIn(nxt, shift=UP * 0.15), Create(line_l), Create(line_r), run_time=0.6)
 
         cell = Battery(cells=1).scale(1.7).move_to(P(0, 2.5))
-        cg = glow_disc(S.GREEN, 2.0, 14, 0.16).move_to(cell)
+        cg = glow_disc(S.GREEN, 1.5, 12, 0.07).move_to(cell)
         self.play(Create(cell), run_time=0.7)
         self.play(FadeIn(cg, scale=0.4), Flash(cell.get_center(), color=S.GREEN, line_length=0.35, flash_radius=1.25,
                                                 num_lines=14), run_time=0.5)
 
         name = H("THE CELL", 160, S.GREEN).move_to(P(0, 0.55))
-        name_glow = name.copy().set_fill(opacity=0).set_stroke(S.GREEN, 22, 0.16)
+        name_glow = name.copy().set_fill(opacity=0).set_stroke(S.GREEN, 16, 0.08)
         sweep = VGroup(*[Rectangle(width=w, height=2.4, stroke_width=0, fill_color=WHITE, fill_opacity=o)
                          for w, o in ((0.9, 0.06), (0.45, 0.12), (0.15, 0.3))]).rotate(-18 * DEGREES).move_to(P(-4.6, 0.55))
         self.play(FadeIn(name, scale=1.2), FadeIn(name_glow), run_time=0.55, rate_func=rush_from)
