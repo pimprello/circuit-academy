@@ -67,14 +67,19 @@ def even_words(text, t0, dur):
     return [{"text": w, "start": t0 + i * per, "end": t0 + (i + 1) * per} for i, w in enumerate(ws)]
 
 
-def build_ass(words, y=1350, size=140, outline=11):
-    """words: list of {text, start, end} in seconds over the whole video."""
+def build_ass(words, y=1400, size=140, outline=11):
+    """words: list of {text, start, end} in seconds over the whole video.
+    Exactly one caption is on screen at a time: each one ends before the next starts."""
     lines = [HEADER.format(size=size, outline=outline)]
-    for ch in chunk(words):
+    chunks = chunk(words)
+    for ci, ch in enumerate(chunks):
+        next_start = words[chunks[ci + 1][0]]["start"] if ci + 1 < len(chunks) else 1e9
         fs = fit_size(" ".join(words[j]["text"].upper() for j in ch), size, outline)
         for k, idx in enumerate(ch):
             start = words[idx]["start"]
-            end = words[ch[k + 1]]["start"] if k + 1 < len(ch) else words[idx]["end"] + 0.12
+            end = words[ch[k + 1]]["start"] if k + 1 < len(ch) else min(words[idx]["end"] + 0.15, next_start)
+            if end <= start:
+                continue
             parts = []
             for j in ch:
                 w = words[j]["text"].upper().replace("{", "(").replace("}", ")")
