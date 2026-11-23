@@ -281,13 +281,13 @@ class WireShort(Scene):
         self.play(FadeIn(nxt, shift=UP * 0.15), Create(line_l), Create(line_r), run_time=0.6)
 
         cell = Battery(cells=1).scale(1.7).move_to(P(0, 2.5))
-        cg = glow_disc(S.GREEN, 1.5, 12, 0.07).move_to(cell)
+        cg = glow_disc(S.GREEN, 1.3, 12, 0.05).move_to(cell)
         self.play(Create(cell), run_time=0.7)
         self.play(FadeIn(cg, scale=0.4), Flash(cell.get_center(), color=S.GREEN, line_length=0.35, flash_radius=1.25,
                                                 num_lines=14), run_time=0.5)
 
         name = H("THE CELL", 160, S.GREEN).move_to(P(0, 0.55))
-        name_glow = name.copy().set_fill(opacity=0).set_stroke(S.GREEN, 16, 0.08)
+        name_glow = name.copy().set_fill(opacity=0).set_stroke(S.GREEN, 12, 0.06)
         sweep = VGroup(*[Rectangle(width=w, height=2.4, stroke_width=0, fill_color=WHITE, fill_opacity=o)
                          for w, o in ((0.9, 0.06), (0.45, 0.12), (0.15, 0.3))]).rotate(-18 * DEGREES).move_to(P(-4.6, 0.55))
         self.play(FadeIn(name, scale=1.2), FadeIn(name_glow), run_time=0.55, rate_func=rush_from)
@@ -298,7 +298,7 @@ class WireShort(Scene):
         btn = RoundedRectangle(width=5.0, height=1.3, corner_radius=0.65, stroke_width=0,
                                fill_color="#FF1E1E", fill_opacity=1).move_to(P(0, -1.6))
         btn_t = B("SUBSCRIBE", 52, WHITE).move_to(btn)
-        btn_glow = glow_disc("#FF1E1E", 2.6, 10, 0.14).stretch(1.6, 0).move_to(btn)
+        btn_glow = glow_disc("#FF1E1E", 1.5, 10, 0.05).stretch(1.9, 0).move_to(btn)
         self.play(FadeIn(btn_glow), FadeIn(VGroup(btn, btn_t), shift=UP * 0.5, scale=0.85), run_time=0.45, rate_func=rush_from)
 
         cur = cursor().move_to(P(3.3, -4.1))
