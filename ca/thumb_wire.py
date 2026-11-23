@@ -2,7 +2,7 @@
 
 Built as its own illustration, not a frame from the video:
 - a sunburst of light behind a big 3D cut wire seen end-on, copper strands glowing hot
-- a hand-drawn red marker ring + curved arrow on the copper
+- a curved red arrow pointing at the copper
 - a two-line curiosity headline with a gradient fill, thick outline and drop shadow
 Everything important sits in the middle of the frame so it still reads when the feed crops it."""
 import numpy as np
@@ -99,12 +99,11 @@ class ThumbWire(Scene):
         self.add(glow_disc("#FF7A1A", 3.6, 18, 0.14).move_to(hero_c))
         self.add(wire_end_on(hero_c), sparks(hero_c))
 
-        ring = scribble_circle(hero_c, 1.15, 1.25)
         lab = headline("COPPER!", 100, ["#FFE2BC", "#FF9A3C"], stroke=12, shadow=0.08).rotate(8 * DEGREES)
         lab.move_to(P(-1.45, 1.3))
         arrow = CurvedArrow(P(-2.45, 0.7), hero_c + P(-1.2, 0.25), angle=0.9, stroke_width=14,
                             color="#FF2E2E", tip_length=0.42)
-        self.add(ring, arrow, lab)
+        self.add(arrow, lab)
 
         vig = VGroup(*[Annulus(inner_radius=r, outer_radius=r + 0.6, stroke_width=0, fill_color=BLACK,
                                fill_opacity=min(0.6, 0.08 * i)).move_to(P(0, -0.6))
