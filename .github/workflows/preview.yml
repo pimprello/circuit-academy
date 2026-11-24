@@ -22,27 +22,34 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 40
+    # Manim's own image already has ffmpeg (with libass for captions), Cairo and Pango,
+    # so the build never waits on Ubuntu's apt mirrors.
+    container:
+      image: manimcommunity/manim:stable
+      options: --user root
+    defaults:
+      run:
+        shell: bash
     steps:
+      - name: git (for checkout + saving previews)
+        timeout-minutes: 5
+        run: |
+          (command -v git || (apt-get update -qq && apt-get install -y -qq --no-install-recommends git ca-certificates)) >/dev/null
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - uses: actions/checkout@v5
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: pip
-      - name: System packages (ffmpeg, Pango for text, fonts)
-        timeout-minutes: 8
-        run: |
-          sudo apt-get update -qq -o Acquire::Retries=3 -o Acquire::http::Timeout=20
-          sudo apt-get install -y -qq -o Acquire::Retries=3 --no-install-recommends ffmpeg libpango1.0-dev libcairo2-dev pkg-config fonts-inter fonts-jetbrains-mono espeak-ng
-          mkdir -p ~/.fonts && cp assets/fonts/*.ttf ~/.fonts/ && fc-cache -f
-      - name: Python packages (CPU-only torch for the Kokoro voice)
-        run: |
-          pip install torch --index-url https://download.pytorch.org/whl/cpu
-          pip install -r requirements.txt
+      - name: Fonts
+        run: mkdir -p ~/.fonts && cp assets/fonts/*.ttf assets/fonts/*.otf ~/.fonts/ && fc-cache -f
       - uses: actions/cache@v4
         with:
-          path: ~/.cache/huggingface
-          key: kokoro-voice-v1
+          path: |
+            ~/.cache/pip
+            ~/.cache/huggingface
+          key: deps-v2-${{ hashFiles('requirements.txt') }}
+      - name: Python packages (CPU-only torch for the Kokoro voice)
+        run: |
+          pip install --break-system-packages torch --index-url https://download.pytorch.org/whl/cpu || pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install --break-system-packages -r requirements.txt || pip install -r requirements.txt
       - name: Make the videos
         run: |
           for e in ${{ inputs.episodes || 'wire cell' }}; do python make_short.py "$e"; done
