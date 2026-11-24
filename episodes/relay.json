@@ -1,0 +1,79 @@
+{
+  "slug": "relay",
+  "title": "THE RELAY",
+  "accent_from": 3,
+  "part": "relay",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This box lets a tiny signal switch a huge load, with a satisfying click.",
+      "show": {
+        "type": "hook",
+        "part": "relay"
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "A relay is an electromagnet and a switch in one box. Power the coil, and its magnetic field pulls the switch closed.",
+      "show": {
+        "type": "symbol",
+        "part": "relay",
+        "notes": [
+          "coil  +  switch"
+        ]
+      }
+    },
+    {
+      "key": "compare",
+      "say": "The coil side needs only a small current. The switch side can carry a big one, and the two never touch electrically.",
+      "show": {
+        "type": "compare",
+        "left": {
+          "title": "COIL",
+          "part": "inductor",
+          "colour": "yellow",
+          "note": "small current"
+        },
+        "right": {
+          "title": "CONTACTS",
+          "part": "switch",
+          "colour": "yellow",
+          "note": "big load"
+        }
+      }
+    },
+    {
+      "key": "fact",
+      "say": "That's how a tiny five volt microcontroller can safely switch a mains appliance.",
+      "show": {
+        "type": "formula",
+        "text": "5 V  →  230 V",
+        "note": "isolated switching"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the motor. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "TINY SIGNAL,",
+    "line2": "HUGE POWER",
+    "label": "RELAY!",
+    "hero": "relay"
+  },
+  "youtube": {
+    "hook": "How a Tiny Signal Switches Huge Power",
+    "learn": "How a relay uses an electromagnet to flip a switch, its symbol, and why it keeps low and high voltage apart.",
+    "tags": [
+      "relay",
+      "electromagnet",
+      "relay symbol",
+      "microcontroller",
+      "switching mains"
+    ]
+  }
+}

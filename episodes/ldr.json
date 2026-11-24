@@ -1,0 +1,78 @@
+{
+  "slug": "ldr",
+  "title": "THE LDR",
+  "accent_from": 3,
+  "part": "ldr",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This part can tell whether it's day or night.",
+      "show": {
+        "type": "hook",
+        "part": "ldr"
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "A light dependent resistor changes its resistance with light. Bright light, low resistance. Darkness, high resistance.",
+      "show": {
+        "type": "symbol",
+        "part": "ldr",
+        "notes": [
+          "more light  =  less resistance"
+        ]
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "In a voltage divider, the output voltage changes as the light changes. That's how streetlights switch on at dusk.",
+      "show": {
+        "type": "circuit",
+        "circuit": "ldr_divider"
+      }
+    },
+    {
+      "key": "compare",
+      "say": "Bright room, a few hundred ohms. Total darkness, around a million.",
+      "show": {
+        "type": "compare",
+        "left": {
+          "title": "BRIGHT",
+          "part": "ldr",
+          "colour": "yellow",
+          "note": "low resistance"
+        },
+        "right": {
+          "title": "DARK",
+          "part": "ldr",
+          "colour": "purple",
+          "note": "high resistance"
+        }
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the thermistor. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "HOW STREETLIGHTS",
+    "line2": "KNOW IT'S DARK",
+    "label": "LDR!",
+    "hero": "ldr"
+  },
+  "youtube": {
+    "hook": "How Streetlights Know It's Dark",
+    "learn": "How a light dependent resistor reacts to light, its symbol, and how a voltage divider turns light into a signal.",
+    "tags": [
+      "LDR",
+      "light dependent resistor",
+      "photoresistor",
+      "light sensor",
+      "voltage divider"
+    ]
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "slug": "op-amp",
+  "title": "THE OP-AMP",
+  "accent_from": 3,
+  "part": "op-amp",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This little triangle can amplify a signal hundreds of thousands of times.",
+      "show": {
+        "type": "hook",
+        "part": "op-amp"
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "An op-amp has two inputs, plus and minus, and one output.",
+      "show": {
+        "type": "symbol",
+        "part": "op-amp",
+        "notes": [
+          "two inputs, one output"
+        ]
+      }
+    },
+    {
+      "key": "rule",
+      "say": "It amplifies the difference between its two inputs.",
+      "show": {
+        "type": "formula",
+        "text": "Vout = A × (V+ − V−)",
+        "note": "open-loop gain"
+      }
+    },
+    {
+      "key": "compare",
+      "say": "Add feedback resistors, and you can set the gain exactly. Without feedback, it acts as a comparator.",
+      "show": {
+        "type": "compare",
+        "left": {
+          "title": "COMPARATOR",
+          "part": "op-amp",
+          "colour": "cyan",
+          "note": "no feedback"
+        },
+        "right": {
+          "title": "AMPLIFIER",
+          "part": "op-amp",
+          "colour": "cyan",
+          "note": "with feedback"
+        }
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the five five five timer. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "THIS TRIANGLE",
+    "line2": "AMPLIFIES",
+    "label": "OP-AMP!",
+    "hero": "op-amp"
+  },
+  "youtube": {
+    "hook": "This Triangle Amplifies Anything",
+    "learn": "What an op-amp is, its two inputs and output, how it amplifies the difference, and comparator versus amplifier.",
+    "tags": [
+      "op amp",
+      "operational amplifier",
+      "amplifier",
+      "comparator",
+      "op amp symbol"
+    ]
+  }
+}

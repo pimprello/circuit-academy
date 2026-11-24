@@ -1,0 +1,61 @@
+{
+  "slug": "555",
+  "title": "THE 555 TIMER",
+  "accent_from": 3,
+  "part": "555 timer",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This chip has been blinking lights since the early seventies, and it's still everywhere.",
+      "show": {
+        "type": "hook",
+        "part": "555 timer"
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "The five five five timer is an eight pin chip that makes pulses, delays and oscillations.",
+      "show": {
+        "type": "symbol",
+        "part": "555 timer",
+        "scale": 1.5,
+        "notes": [
+          "8 pins, endless uses"
+        ]
+      }
+    },
+    {
+      "key": "freq",
+      "say": "Add two resistors and a capacitor, and it flashes an LED at a speed you choose.",
+      "show": {
+        "type": "formula",
+        "text": "f ≈ 1.44 ÷ ((R1 + 2R2) × C)",
+        "note": "astable frequency"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the crystal. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "THE CHIP THAT",
+    "line2": "NEVER DIED",
+    "label": "555 TIMER!",
+    "hero": "555 timer"
+  },
+  "youtube": {
+    "hook": "This 1970s Chip Is Still Everywhere",
+    "learn": "What the 555 timer does, its 8 pins, and how two resistors and a capacitor set how fast it flashes.",
+    "tags": [
+      "555 timer",
+      "NE555",
+      "timer IC",
+      "astable",
+      "LED flasher"
+    ]
+  }
+}

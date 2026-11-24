@@ -149,6 +149,15 @@ class EpisodeShort(Scene):
         self.sfx("whoosh", 0.45)
         self.play(*[Create(p) for p in c.parts], FadeIn(c.labels), run_time=0.8)
         self.play(*[Create(w) for w in c.wires], run_time=1.0, rate_func=smooth)
+        sw = getattr(c, "switch", None)
+        if sw is not None and flow:     # close the switch first - current only flows once the gap is shut
+            start, end = sw.blade.get_start(), sw.blade.get_end()
+            target = sw.pin("_closed")
+            ang = np.arctan2(*(target - start)[1::-1]) - np.arctan2(*(end - start)[1::-1])
+            ang = (ang + PI) % TAU - PI
+            self.wait(0.3)
+            self.sfx("click", 0.9)
+            self.play(Rotate(sw.blade, ang, about_point=start), run_time=0.25, rate_func=rate_functions.ease_in_quad)
         if flow and c.loops:
             halo = neon(c.wires, S.YELLOW, 0.8)
             glows = [glow_disc(col, r, 12, 0.2).move_to(p) for p, col, r in c.glows]
@@ -182,7 +191,7 @@ class EpisodeShort(Scene):
         pic = PARTS.picture(part)
         pic.scale_to_fit_width(min(6.2, pic.width * 1.2)).move_to(P(0, 0.5))
         col = PARTS.colour(part)
-        halo = glow_disc(col, 2.6, 16, 0.10).move_to(pic)
+        halo = glow_disc(col, 2.6, 16, 0.10 if part in PARTS.PICTURES else 0.05).move_to(pic)
         rings = VGroup(*[Circle(radius=1.0, stroke_color=col, stroke_width=4, stroke_opacity=0.5).move_to(pic)
                          for _ in range(2)])
         pic.scale(1.12)
@@ -228,9 +237,10 @@ class EpisodeShort(Scene):
         for lab in sh.get("labels", []):
             col = getattr(S, lab.get("colour", "TEXT").upper(), lab.get("colour", S.TEXT))
             chip = label_chip(lab["text"], col)
-            target = pic.get_center() + P(*lab["at"])
+            target = (pic.anchors[lab["anchor"]].get_center() if "anchor" in lab and hasattr(pic, "anchors")
+                      else pic.get_center() + P(*lab["at"]))
             side = -1 if lab.get("side", "left") == "left" else 1
-            chip.move_to(P(side * 2.05, lab.get("y", -1.0)))
+            chip.move_to(P(side * (3.75 - chip.width / 2), lab.get("y", -1.0)))   # hugs the side, never off screen
             line = VGroup(Line(chip.get_edge_center(-side * LEFT if side < 0 else LEFT), target, stroke_color=col, stroke_width=4),
                           Dot(target, radius=0.08, color=col))
             self.sfx("pop", 0.6, 0.1)
@@ -242,7 +252,10 @@ class EpisodeShort(Scene):
     def beat_symbol(self, d, b):
         t0 = self.renderer.time
         sh = b["show"]
-        sym = PARTS.symbol(sh["part"]).scale(sh.get("scale", 2.0)).move_to(P(0, 0.7))
+        sym = PARTS.symbol(sh["part"]).scale(sh.get("scale", 2.0))
+        if sym.height > (3.2 if sh.get("pins") else 3.8):       # leave room for pin letters below the title
+            sym.scale_to_fit_height(3.2 if sh.get("pins") else 3.8)
+        sym.move_to(P(0, 0.4 if sh.get("pins") else 0.7))
         items = [sym]
         if False:   # top tag chips removed (style decision)
             chip = label_chip(sh["tag"], S.CYAN).move_to(P(0, 2.95))
@@ -256,7 +269,7 @@ class EpisodeShort(Scene):
             if not hasattr(sym, "pin"):
                 break
             p = sym.pin(pin)
-            t = H(text, 96, S.YELLOW).move_to(p + (p - sym.get_center()) / max(np.linalg.norm(p - sym.get_center()), 1e-6) * 0.6)
+            t = H(text, 80, S.YELLOW).move_to(p + (p - sym.get_center()) / max(np.linalg.norm(p - sym.get_center()), 1e-6) * 0.45)
             self.sfx("pop_hi", 0.5)
             self.play(FadeIn(t, scale=1.6), run_time=0.3)
             items.append(t)
@@ -288,7 +301,10 @@ class EpisodeShort(Scene):
                                     fill_color=col, fill_opacity=0.06).move_to(P(x, 0.15))
             ttl = B(spec["title"], 26, col).move_to(P(x, 1.85))
             vis = (PARTS.picture(spec["part"]) if spec.get("picture") else PARTS.symbol(spec["part"]))
-            vis.scale_to_fit_width(min(2.8, vis.width)).move_to(P(x, 0.2))
+            vis.scale_to_fit_width(2.7)
+            if vis.height > 2.4:
+                vis.scale_to_fit_height(2.4)
+            vis.move_to(P(x, 0.2))
             sub = B(spec.get("note", ""), 24, S.TEXT).move_to(P(x, -1.55)) if spec.get("note") else VGroup()
             self.sfx("pop", 0.6)
             self.play(FadeIn(card, scale=0.9), FadeIn(ttl), Create(vis), FadeIn(sub), run_time=0.7)

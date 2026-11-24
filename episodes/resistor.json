@@ -1,0 +1,98 @@
+{
+  "slug": "resistor",
+  "title": "THE RESISTOR",
+  "accent_from": 3,
+  "part": "resistor",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This tiny striped part is in almost every circuit, and its whole job is to resist.",
+      "show": {
+        "type": "hook",
+        "part": "resistor"
+      }
+    },
+    {
+      "key": "look",
+      "say": "A resistor limits how much current can flow. The coloured bands tell you its value. Brown, black, red means one thousand ohms.",
+      "show": {
+        "type": "picture",
+        "part": "resistor",
+        "labels": [
+          {
+            "text": "colour bands = value",
+            "colour": "orange",
+            "side": "left",
+            "anchor": "bands",
+            "y": -1.6
+          },
+          {
+            "text": "1 kΩ  ±5 %",
+            "colour": "yellow",
+            "side": "right",
+            "anchor": "gold",
+            "y": -2.4
+          }
+        ]
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "In a circuit diagram it's drawn as a zigzag, or as a plain rectangle in the UK and Europe.",
+      "show": {
+        "type": "compare",
+        "left": {
+          "title": "US STYLE",
+          "part": "resistor",
+          "colour": "orange"
+        },
+        "right": {
+          "title": "UK / EU STYLE",
+          "part": "resistor_iec",
+          "colour": "orange"
+        }
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "Without a resistor, this LED would draw too much current and burn out. Four hundred and seventy ohms keeps it safe.",
+      "show": {
+        "type": "circuit",
+        "circuit": "led_resistor"
+      }
+    },
+    {
+      "key": "ohm",
+      "say": "The rule behind it is Ohm's law. Voltage equals current times resistance.",
+      "show": {
+        "type": "formula",
+        "text": "V = I × R",
+        "note": "Ohm's law"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the switch. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "WHY EVERY CIRCUIT",
+    "line2": "NEEDS THIS",
+    "label": "RESISTOR!",
+    "hero": "resistor"
+  },
+  "youtube": {
+    "hook": "Why Every Circuit Needs This Tiny Part",
+    "learn": "What a resistor does, how to read its colour bands, its two circuit symbols, why an LED needs one, and Ohm's law.",
+    "tags": [
+      "resistor",
+      "resistor colour code",
+      "ohms law",
+      "resistor symbol",
+      "current limiting resistor"
+    ]
+  }
+}

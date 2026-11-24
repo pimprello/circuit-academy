@@ -1,0 +1,81 @@
+{
+  "slug": "mosfet",
+  "title": "THE MOSFET",
+  "accent_from": 3,
+  "part": "mosfet",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This is the switch inside electric cars, laptops and almost every power supply.",
+      "show": {
+        "type": "hook",
+        "part": "mosfet"
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "A MOSFET has a gate, a drain and a source. A voltage on the gate switches it on.",
+      "show": {
+        "type": "symbol",
+        "part": "mosfet",
+        "pins": {
+          "g": "G",
+          "d": "D",
+          "s": "S"
+        }
+      }
+    },
+    {
+      "key": "compare",
+      "say": "A normal transistor needs a base current. A MOSFET's gate draws almost no current at all.",
+      "show": {
+        "type": "compare",
+        "left": {
+          "title": "BJT",
+          "part": "transistor",
+          "colour": "cyan",
+          "note": "current controlled"
+        },
+        "right": {
+          "title": "MOSFET",
+          "part": "mosfet",
+          "colour": "cyan",
+          "note": "voltage controlled"
+        }
+      }
+    },
+    {
+      "key": "fact",
+      "say": "Fully on, its resistance can be tiny, so it barely heats up, even switching big currents.",
+      "show": {
+        "type": "formula",
+        "text": "ON = TINY R",
+        "note": "very low losses"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the relay. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "THE SWITCH IN",
+    "line2": "ELECTRIC CARS",
+    "label": "MOSFET!",
+    "hero": "mosfet"
+  },
+  "youtube": {
+    "hook": "The Switch Inside Every Electric Car",
+    "learn": "What a MOSFET is, its gate, drain and source, how it differs from a normal transistor, and why it wastes so little power.",
+    "tags": [
+      "MOSFET",
+      "transistor",
+      "power electronics",
+      "gate drain source",
+      "switching"
+    ]
+  }
+}

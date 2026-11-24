@@ -1,0 +1,68 @@
+{
+  "slug": "transformer",
+  "title": "THE TRANSFORMER",
+  "accent_from": 3,
+  "part": "transformer",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This is how the high voltage from the wall gets stepped down to something safe.",
+      "show": {
+        "type": "hook",
+        "part": "transformer"
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "A transformer is two coils sharing an iron core. It only works with alternating current.",
+      "show": {
+        "type": "symbol",
+        "part": "transformer",
+        "notes": [
+          "two coils, one core"
+        ]
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "The changing current in the first coil makes a changing magnetic field, which drives a current in the second coil.",
+      "show": {
+        "type": "circuit",
+        "circuit": "transformer_lamp"
+      }
+    },
+    {
+      "key": "ratio",
+      "say": "The voltage changes by the ratio of the turns. Fewer turns on the second coil means a lower voltage.",
+      "show": {
+        "type": "formula",
+        "text": "Vs ÷ Vp = Ns ÷ Np",
+        "note": "turns ratio"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the zener. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "HOW 230 V",
+    "line2": "BECOMES 12 V",
+    "label": "TRANSFORMER!",
+    "hero": "transformer"
+  },
+  "youtube": {
+    "hook": "How 230 Volts Becomes 12 Volts",
+    "learn": "How a transformer uses two coils and an iron core, why it needs AC, and how the turns ratio sets the voltage.",
+    "tags": [
+      "transformer",
+      "step down transformer",
+      "turns ratio",
+      "AC voltage",
+      "transformer symbol"
+    ]
+  }
+}

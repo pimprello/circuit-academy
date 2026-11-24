@@ -1,0 +1,68 @@
+{
+  "slug": "potentiometer",
+  "title": "THE POTENTIOMETER",
+  "accent_from": 3,
+  "part": "potentiometer",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "Every volume knob you've ever turned is one of these.",
+      "show": {
+        "type": "hook",
+        "part": "potentiometer"
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "A potentiometer is a resistor with a sliding contact, called the wiper.",
+      "show": {
+        "type": "symbol",
+        "part": "potentiometer",
+        "notes": [
+          "arrow  =  wiper"
+        ]
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "Connect its ends across the supply, and the wiper gives you any voltage in between.",
+      "show": {
+        "type": "circuit",
+        "circuit": "pot_divider"
+      }
+    },
+    {
+      "key": "range",
+      "say": "Turn it one way for zero volts, the other way for the full nine.",
+      "show": {
+        "type": "formula",
+        "text": "0 V  →  9 V",
+        "note": "voltage divider"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the L D R. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "WHAT'S BEHIND",
+    "line2": "EVERY KNOB?",
+    "label": "A POT!",
+    "hero": "potentiometer"
+  },
+  "youtube": {
+    "hook": "What's Behind Every Volume Knob?",
+    "learn": "How a potentiometer works, what the wiper does, its symbol, and how it makes any voltage you want.",
+    "tags": [
+      "potentiometer",
+      "pot",
+      "volume knob",
+      "voltage divider",
+      "variable resistor"
+    ]
+  }
+}

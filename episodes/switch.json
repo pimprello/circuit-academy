@@ -1,0 +1,98 @@
+{
+  "slug": "switch",
+  "title": "THE SWITCH",
+  "accent_from": 3,
+  "part": "switch",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "Every light you've ever turned on used one of these.",
+      "show": {
+        "type": "hook",
+        "part": "switch"
+      }
+    },
+    {
+      "key": "look",
+      "say": "A switch is a gap you can open and close. Closed, current flows. Open, it stops dead.",
+      "show": {
+        "type": "picture",
+        "part": "switch",
+        "labels": [
+          {
+            "text": "flip the lever",
+            "colour": "yellow",
+            "side": "right",
+            "anchor": "lever",
+            "y": 1.3
+          },
+          {
+            "text": "contacts inside",
+            "colour": "cyan",
+            "side": "left",
+            "anchor": "pins",
+            "y": -2.3
+          }
+        ]
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "In a diagram, a switch is a line that lifts away from a contact. A push button has a cap you press down.",
+      "show": {
+        "type": "compare",
+        "left": {
+          "title": "SWITCH",
+          "part": "switch",
+          "colour": "yellow"
+        },
+        "right": {
+          "title": "PUSH BUTTON",
+          "part": "button",
+          "colour": "yellow"
+        }
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "Close the switch, the gap disappears, and the bulb lights up.",
+      "show": {
+        "type": "circuit",
+        "circuit": "switch_lamp"
+      }
+    },
+    {
+      "key": "fact",
+      "say": "A switch doesn't change the voltage. It only decides whether the circuit is complete.",
+      "show": {
+        "type": "formula",
+        "text": "OPEN = OFF",
+        "note": "closed = complete circuit"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the bulb. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "THE SIMPLEST PART",
+    "line2": "EVER MADE?",
+    "label": "ON / OFF!",
+    "hero": "switch"
+  },
+  "youtube": {
+    "hook": "The Simplest Part in Every Circuit",
+    "learn": "How a switch opens and closes a circuit, the switch and push-button symbols, and what really happens when you flip it.",
+    "tags": [
+      "switch",
+      "push button",
+      "toggle switch",
+      "switch symbol",
+      "open and closed circuit"
+    ]
+  }
+}

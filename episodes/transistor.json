@@ -1,0 +1,70 @@
+{
+  "slug": "transistor",
+  "title": "THE TRANSISTOR",
+  "accent_from": 3,
+  "part": "transistor",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "Your phone has billions of these, and every one is a tiny switch.",
+      "show": {
+        "type": "hook",
+        "part": "transistor"
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "A transistor has three legs: base, collector and emitter. A small current into the base controls a much bigger one.",
+      "show": {
+        "type": "symbol",
+        "part": "transistor",
+        "pins": {
+          "b": "B",
+          "c": "C",
+          "e": "E"
+        }
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "Close the switch, a tiny base current flows, and the transistor lets a much bigger current light the LED.",
+      "show": {
+        "type": "circuit",
+        "circuit": "npn_led"
+      }
+    },
+    {
+      "key": "gain",
+      "say": "The collector current is the base current times the gain, often around a hundred.",
+      "show": {
+        "type": "formula",
+        "text": "Ic = β × Ib",
+        "note": "current gain"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the mosfet. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "BILLIONS OF THESE",
+    "line2": "IN YOUR PHONE",
+    "label": "TRANSISTOR!",
+    "hero": "transistor"
+  },
+  "youtube": {
+    "hook": "There Are Billions of These in Your Phone",
+    "learn": "How a transistor works as a switch and amplifier, its base, collector and emitter, and transistor gain.",
+    "tags": [
+      "transistor",
+      "NPN transistor",
+      "BJT",
+      "transistor switch",
+      "current gain"
+    ]
+  }
+}

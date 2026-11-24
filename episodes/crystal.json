@@ -1,0 +1,69 @@
+{
+  "slug": "crystal",
+  "title": "THE CRYSTAL",
+  "accent_from": 3,
+  "part": "crystal",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "There's a tiny vibrating crystal inside your watch, keeping perfect time.",
+      "show": {
+        "type": "hook",
+        "part": "crystal"
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "A quartz crystal is drawn as a small rectangle between two plates.",
+      "show": {
+        "type": "symbol",
+        "part": "crystal",
+        "notes": [
+          "box between plates  =  crystal"
+        ]
+      }
+    },
+    {
+      "key": "freq",
+      "say": "Quartz vibrates at a very precise frequency. Watch crystals vibrate thirty two thousand, seven hundred and sixty eight times a second.",
+      "show": {
+        "type": "formula",
+        "text": "32,768 Hz",
+        "note": "watch crystal"
+      }
+    },
+    {
+      "key": "tick",
+      "say": "Halve that fifteen times, and you get exactly one tick per second.",
+      "show": {
+        "type": "formula",
+        "text": "32,768 ÷ 2¹⁵ = 1 Hz",
+        "note": "one tick per second"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Subscribe for more electronics, explained simply.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "HOW YOUR WATCH",
+    "line2": "KEEPS TIME",
+    "label": "QUARTZ!",
+    "hero": "crystal"
+  },
+  "youtube": {
+    "hook": "How Your Watch Keeps Perfect Time",
+    "learn": "What a quartz crystal does, its symbol, why it vibrates 32,768 times a second, and how that becomes one tick per second.",
+    "tags": [
+      "quartz crystal",
+      "crystal oscillator",
+      "32768 Hz",
+      "watch",
+      "timekeeping"
+    ]
+  }
+}

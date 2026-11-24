@@ -1,0 +1,77 @@
+name: Upload to YouTube
+
+# Twice a day: take the next component in episodes/curriculum.json that hasn't been uploaded,
+# build it (narrator, animation, captions, sound, thumbnail), upload it as a public Short with its
+# custom thumbnail, and record it in state/uploads.json so it is never uploaded twice.
+# Does nothing until the YT_CLIENT_ID / YT_CLIENT_SECRET / YT_REFRESH_TOKEN secrets exist.
+on:
+  schedule:
+    - cron: '7 12 * * *'    # ~12:00 London (13:00 in summer time)
+    - cron: '7 19 * * *'    # ~19:00 London (20:00 in summer time)
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: 'Upload this episode now (empty = next in line)'
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: upload
+  cancel-in-progress: false
+
+jobs:
+  pick:
+    runs-on: ubuntu-24.04
+    outputs:
+      episode: ${{ steps.p.outputs.episode }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: p
+        env:
+          HAS_SECRETS: ${{ secrets.YT_REFRESH_TOKEN != '' && secrets.YT_CLIENT_ID != '' && secrets.YT_CLIENT_SECRET != '' }}
+        run: |
+          if [ "$HAS_SECRETS" != "true" ]; then
+            echo "::notice::YouTube secrets not set yet - nothing uploaded."; echo "episode=" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          e="${{ inputs.episode }}"
+          [ -z "$e" ] && e="$(python3 scripts/pick_next.py 1)"
+          if [ -z "$e" ]; then echo "::warning::No episodes left to upload - add more to episodes/."; fi
+          echo "episode=$e" >> "$GITHUB_OUTPUT"; echo "Next: $e"
+
+  make:
+    needs: pick
+    if: needs.pick.outputs.episode != ''
+    uses: ./.github/workflows/make.yml
+    with:
+      episodes: ${{ needs.pick.outputs.episode }}
+
+  upload:
+    needs: [pick, make]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install google-api-python-client google-auth
+      - uses: actions/download-artifact@v4
+        with:
+          name: videos
+          path: out
+      - name: Upload with thumbnail
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python scripts/upload.py ${{ needs.pick.outputs.episode }}
+      - name: Remember what was uploaded
+        if: always()
+        run: |
+          git config user.name "upload-bot"
+          git config user.email "upload-bot@users.noreply.github.com"
+          git add state/uploads.json
+          git diff --cached --quiet && exit 0
+          git commit -qm "Uploaded ${{ needs.pick.outputs.episode }} [skip ci]"
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done

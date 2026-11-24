@@ -1,0 +1,78 @@
+{
+  "slug": "inductor",
+  "title": "THE INDUCTOR",
+  "accent_from": 3,
+  "part": "inductor",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This coil of wire hates sudden changes in current.",
+      "show": {
+        "type": "hook",
+        "part": "inductor"
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "An inductor is a coil of wire. Current through it builds a magnetic field, and that field stores energy.",
+      "show": {
+        "type": "symbol",
+        "part": "inductor",
+        "notes": [
+          "coil  =  magnetic field"
+        ]
+      }
+    },
+    {
+      "key": "core",
+      "say": "Wind it around an iron core, and the magnetic field gets much stronger.",
+      "show": {
+        "type": "compare",
+        "left": {
+          "title": "AIR CORE",
+          "part": "inductor",
+          "colour": "purple"
+        },
+        "right": {
+          "title": "IRON CORE",
+          "part": "inductor_core",
+          "colour": "purple",
+          "note": "stronger field"
+        }
+      }
+    },
+    {
+      "key": "fact",
+      "say": "Try to change the current suddenly, and it pushes back. That's why inductors smooth out power supplies.",
+      "show": {
+        "type": "formula",
+        "text": "RESISTS CHANGE",
+        "note": "smooths current"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the transistor. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "A COIL THAT",
+    "line2": "FIGHTS BACK",
+    "label": "INDUCTOR!",
+    "hero": "inductor"
+  },
+  "youtube": {
+    "hook": "The Coil That Fights Back",
+    "learn": "What an inductor is, how its magnetic field stores energy, air versus iron cores, and why it resists changes in current.",
+    "tags": [
+      "inductor",
+      "coil",
+      "magnetic field",
+      "inductance",
+      "inductor symbol"
+    ]
+  }
+}

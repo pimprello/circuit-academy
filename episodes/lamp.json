@@ -1,0 +1,92 @@
+{
+  "slug": "lamp",
+  "title": "THE BULB",
+  "accent_from": 3,
+  "part": "lamp",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This old-school bulb makes light by getting incredibly hot.",
+      "show": {
+        "type": "hook",
+        "part": "lamp"
+      }
+    },
+    {
+      "key": "look",
+      "say": "Current flows through a thin filament, which heats up to over two thousand degrees and glows.",
+      "show": {
+        "type": "picture",
+        "part": "lamp",
+        "labels": [
+          {
+            "text": "filament",
+            "colour": "orange",
+            "side": "right",
+            "anchor": "filament",
+            "y": -1.9
+          },
+          {
+            "text": "glass bulb",
+            "colour": "cyan",
+            "side": "left",
+            "anchor": "glass",
+            "y": 1.4
+          }
+        ]
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "In a circuit diagram, a lamp is a circle with a cross inside.",
+      "show": {
+        "type": "symbol",
+        "part": "lamp",
+        "notes": [
+          "circle + cross  =  lamp"
+        ]
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "Connect it to a battery and the filament glows. More current means brighter light.",
+      "show": {
+        "type": "circuit",
+        "circuit": "battery_lamp"
+      }
+    },
+    {
+      "key": "power",
+      "say": "The power it uses is voltage times current. That's what the watts on the box mean.",
+      "show": {
+        "type": "formula",
+        "text": "P = V × I",
+        "note": "power in watts"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the led. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "WHY BULBS",
+    "line2": "GET SO HOT",
+    "label": "2000 °C!",
+    "hero": "lamp"
+  },
+  "youtube": {
+    "hook": "Why Old Light Bulbs Get So Hot",
+    "learn": "How a filament bulb makes light, the lamp symbol, how it lights in a circuit, and what watts really mean.",
+    "tags": [
+      "light bulb",
+      "filament",
+      "lamp symbol",
+      "incandescent bulb",
+      "watts"
+    ]
+  }
+}

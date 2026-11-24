@@ -1,0 +1,92 @@
+{
+  "slug": "capacitor",
+  "title": "THE CAPACITOR",
+  "accent_from": 3,
+  "part": "capacitor",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This little can stores electric charge, and can let it all out in an instant.",
+      "show": {
+        "type": "hook",
+        "part": "capacitor"
+      }
+    },
+    {
+      "key": "look",
+      "say": "Capacitors come in many shapes. This electrolytic one has a stripe marking its negative leg.",
+      "show": {
+        "type": "picture",
+        "part": "capacitor",
+        "labels": [
+          {
+            "text": "stripe = negative",
+            "colour": "cyan",
+            "side": "right",
+            "anchor": "stripe",
+            "y": 0.8
+          },
+          {
+            "text": "− leg",
+            "colour": "red",
+            "side": "left",
+            "anchor": "negative",
+            "y": -2.2
+          }
+        ]
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "Its symbol is two plates with a gap between them. Energy is stored in the electric field across that gap.",
+      "show": {
+        "type": "symbol",
+        "part": "capacitor",
+        "notes": [
+          "two plates, one gap"
+        ]
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "Through a resistor, it charges up gradually. A bigger resistor or capacitor means slower charging.",
+      "show": {
+        "type": "circuit",
+        "circuit": "rc_charge"
+      }
+    },
+    {
+      "key": "tau",
+      "say": "Resistance times capacitance gives the time constant. Ten kilohms times a hundred microfarads is one second.",
+      "show": {
+        "type": "formula",
+        "text": "τ = R × C",
+        "note": "10 kΩ × 100 µF = 1 s"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the fuse. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "THIS STORES",
+    "line2": "ELECTRICITY",
+    "label": "CAPACITOR!",
+    "hero": "capacitor"
+  },
+  "youtube": {
+    "hook": "This Tiny Can Stores Electricity",
+    "learn": "What a capacitor does, which leg is negative, its symbol, how it charges through a resistor, and the RC time constant.",
+    "tags": [
+      "capacitor",
+      "electrolytic capacitor",
+      "capacitor symbol",
+      "RC circuit",
+      "time constant"
+    ]
+  }
+}

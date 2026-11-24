@@ -45,9 +45,10 @@ Path(ass).write_text(build_ass(words), encoding="utf-8")
 # 3. animation
 env = dict(os.environ, PYTHONPATH=str(ROOT))
 quiet = dict(stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) if not os.environ.get("VERBOSE") else {}
-subprocess.run(["manim", "-r", "1080,1920", "--fps", "30", "--disable_caching", "-o", f"{slug}_raw.mp4",
+media = f"media/{slug}"     # one folder per episode, so several can render at once
+subprocess.run(["manim", "-r", "1080,1920", "--fps", "30", "--disable_caching", "--media_dir", media, "-o", f"{slug}_raw.mp4",
                 "ca/engine.py", "EpisodeShort"], check=True, env=env, **quiet)
-raw = f"media/videos/engine/1920p30/{slug}_raw.mp4"
+raw = f"{media}/videos/engine/1920p30/{slug}_raw.mp4"
 
 # 4. sound: narrator (placed per beat, lightly polished) + the sound-effects track logged by the animation
 from ca.sfx import build_track, load_cues
@@ -74,8 +75,8 @@ subprocess.run(cmd, check=True)
 print(f"done: out/{slug}.mp4", "(with narrator)" if voiced else "(silent)")
 
 # 5. hand-drawn thumbnail
-subprocess.run(["manim", "-s", "-r", "1080,1920", "--disable_caching", "-o", f"{slug}_thumb", "ca/thumb.py", "Thumb"],
-               check=True, env=env, **quiet)
-subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", f"media/images/thumb/{slug}_thumb.png", "-q:v", "2",
+subprocess.run(["manim", "-s", "-r", "1080,1920", "--disable_caching", "--media_dir", media, "-o", f"{slug}_thumb",
+                "ca/thumb.py", "Thumb"], check=True, env=env, **quiet)
+subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", f"{media}/images/thumb/{slug}_thumb.png", "-q:v", "2",
                 f"out/{slug}_thumb.jpg"], check=True)
 print(f"done: out/{slug}_thumb.jpg")

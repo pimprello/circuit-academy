@@ -1,0 +1,68 @@
+{
+  "slug": "motor",
+  "title": "THE MOTOR",
+  "accent_from": 3,
+  "part": "motor",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This turns electricity into spinning motion. It's in fans, drills and drones.",
+      "show": {
+        "type": "hook",
+        "part": "motor"
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "In a circuit diagram, a motor is a circle with an M inside.",
+      "show": {
+        "type": "symbol",
+        "part": "motor",
+        "notes": [
+          "circle + M  =  motor"
+        ]
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "Current through its coils makes a magnetic field that pushes against magnets, and the shaft spins.",
+      "show": {
+        "type": "circuit",
+        "circuit": "motor_switch"
+      }
+    },
+    {
+      "key": "reverse",
+      "say": "Swap the battery around, and a DC motor spins the other way.",
+      "show": {
+        "type": "formula",
+        "text": "SWAP + AND −",
+        "note": "reverses direction"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the transformer. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "HOW ELECTRICITY",
+    "line2": "SPINS",
+    "label": "MOTOR!",
+    "hero": "motor"
+  },
+  "youtube": {
+    "hook": "How Electricity Makes Things Spin",
+    "learn": "How a DC motor turns current into motion, its circuit symbol, and how to make it spin the other way.",
+    "tags": [
+      "DC motor",
+      "electric motor",
+      "motor symbol",
+      "electromagnetism",
+      "how motors work"
+    ]
+  }
+}

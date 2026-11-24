@@ -109,7 +109,10 @@ def hero_cell(c):
 def hero_generic(part):
     def make(c):
         pic = PARTS.picture(part)
-        pic.scale_to_fit_width(5.6).move_to(c)
+        pic.scale_to_fit_width(5.6)
+        if pic.height > 4.6:            # tall parts (LED, capacitor) must not reach the headline
+            pic.scale_to_fit_height(4.6)
+        pic.move_to(c + DOWN * 0.3)
         return VGroup(pic, sparks(c)), pic.get_left() + P(0.4, 0.3)
     return make
 

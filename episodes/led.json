@@ -1,0 +1,92 @@
+{
+  "slug": "led",
+  "title": "THE LED",
+  "accent_from": 3,
+  "part": "led",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This tiny light is far more efficient than a bulb, but connect it the wrong way and it won't light at all.",
+      "show": {
+        "type": "hook",
+        "part": "led"
+      }
+    },
+    {
+      "key": "look",
+      "say": "An LED has two legs. The longer leg is the anode, positive. The shorter leg is the cathode, negative.",
+      "show": {
+        "type": "picture",
+        "part": "led",
+        "labels": [
+          {
+            "text": "long leg  =  +",
+            "colour": "green",
+            "side": "right",
+            "anchor": "anode",
+            "y": -2.2
+          },
+          {
+            "text": "short leg  =  −",
+            "colour": "red",
+            "side": "left",
+            "anchor": "cathode",
+            "y": -2.2
+          }
+        ]
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "Its symbol is a diode with two arrows, for the light coming out. Current flows the way the triangle points.",
+      "show": {
+        "type": "symbol",
+        "part": "led",
+        "notes": [
+          "arrows  =  light out"
+        ]
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "Always add a resistor in series, or the LED draws too much current and burns out.",
+      "show": {
+        "type": "circuit",
+        "circuit": "led_resistor"
+      }
+    },
+    {
+      "key": "calc",
+      "say": "To pick the resistor, take the supply voltage, subtract the LED's voltage, and divide by the current you want.",
+      "show": {
+        "type": "formula",
+        "text": "R = (V − Vf) ÷ I",
+        "note": "choosing the resistor"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the diode. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "WHY YOUR LED",
+    "line2": "WON'T LIGHT",
+    "label": "WRONG WAY!",
+    "hero": "led"
+  },
+  "youtube": {
+    "hook": "Why Your LED Won't Light Up",
+    "learn": "Which LED leg is positive, the LED symbol, why it always needs a resistor, and how to calculate that resistor.",
+    "tags": [
+      "LED",
+      "light emitting diode",
+      "LED polarity",
+      "LED resistor",
+      "anode cathode"
+    ]
+  }
+}

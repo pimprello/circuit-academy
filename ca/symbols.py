@@ -503,7 +503,7 @@ class ICBox(Part):
     kind = "ic"
 
     def __init__(self, name, left=(), right=(), top=(), bottom=(), w=2.2, h=None, **kw):
-        self.name, self.sides = name, dict(left=left, right=right, top=top, bottom=bottom)
+        self.chip_name, self.sides = name, dict(left=left, right=right, top=top, bottom=bottom)
         self.w = w
         self.h = h or max(1.6, 0.55 * (max(len(left), len(right)) + 1))
         super().__init__(**kw)
@@ -528,7 +528,7 @@ class ICBox(Part):
     def build(self):
         self.body.add(RoundedRectangle(width=self.w, height=self.h, corner_radius=0.08, stroke_color=self.color_,
                                        stroke_width=S.STROKE, fill_color=self.color_, fill_opacity=0.07))
-        self.body.add(Text(self.name, font=S.HEAD_FONT, weight="BOLD", font_size=34, color=self.color_))
+        self.body.add(Text(self.chip_name, font=S.HEAD_FONT, weight="BOLD", font_size=34, color=self.color_))
         for pid, (edge, tip, lab, inward) in self._coords().items():
             self.lead(edge, tip)
             if lab:

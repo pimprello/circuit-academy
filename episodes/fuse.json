@@ -1,0 +1,92 @@
+{
+  "slug": "fuse",
+  "title": "THE FUSE",
+  "accent_from": 3,
+  "part": "fuse",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This tiny glass tube sacrifices itself to protect your devices.",
+      "show": {
+        "type": "hook",
+        "part": "fuse"
+      }
+    },
+    {
+      "key": "look",
+      "say": "Inside is a thin wire. If too much current flows, the wire melts and breaks the circuit.",
+      "show": {
+        "type": "picture",
+        "part": "fuse",
+        "labels": [
+          {
+            "text": "thin wire melts",
+            "colour": "orange",
+            "side": "left",
+            "anchor": "wire",
+            "y": -1.4
+          },
+          {
+            "text": "metal caps",
+            "colour": "cyan",
+            "side": "right",
+            "anchor": "cap",
+            "y": -1.4
+          }
+        ]
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "In a circuit diagram, a fuse is a rectangle with a line running through it.",
+      "show": {
+        "type": "symbol",
+        "part": "fuse",
+        "notes": [
+          "box + line  =  fuse"
+        ]
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "In normal use, current flows straight through it. Only a fault makes it blow.",
+      "show": {
+        "type": "circuit",
+        "circuit": "fuse_lamp"
+      }
+    },
+    {
+      "key": "rating",
+      "say": "Once it blows, it's done. Always replace it with one of the same rating.",
+      "show": {
+        "type": "formula",
+        "text": "SAME RATING",
+        "note": "never fit a bigger fuse"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the potentiometer. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "THIS PART",
+    "line2": "DIES FOR YOU",
+    "label": "FUSE!",
+    "hero": "fuse"
+  },
+  "youtube": {
+    "hook": "The Part That Dies to Save Your Devices",
+    "learn": "How a fuse melts to stop dangerous currents, its circuit symbol, where it goes in a circuit, and why ratings matter.",
+    "tags": [
+      "fuse",
+      "glass fuse",
+      "fuse symbol",
+      "overcurrent protection",
+      "electrical safety"
+    ]
+  }
+}

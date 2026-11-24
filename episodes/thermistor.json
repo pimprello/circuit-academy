@@ -1,0 +1,78 @@
+{
+  "slug": "thermistor",
+  "title": "THE THERMISTOR",
+  "accent_from": 3,
+  "part": "thermistor",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "Your phone knows it's overheating because of a part like this.",
+      "show": {
+        "type": "hook",
+        "part": "thermistor"
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "A thermistor is a resistor that changes with temperature. The common NTC type drops its resistance as it heats up.",
+      "show": {
+        "type": "symbol",
+        "part": "thermistor",
+        "notes": [
+          "NTC: hotter  =  less resistance"
+        ]
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "In a voltage divider, it turns temperature into a voltage that a chip can read.",
+      "show": {
+        "type": "circuit",
+        "circuit": "thermistor_divider"
+      }
+    },
+    {
+      "key": "compare",
+      "say": "Cold, its resistance is high. Hot, it falls, and the voltage changes with it.",
+      "show": {
+        "type": "compare",
+        "left": {
+          "title": "COLD",
+          "part": "thermistor",
+          "colour": "cyan",
+          "note": "high resistance"
+        },
+        "right": {
+          "title": "HOT",
+          "part": "thermistor",
+          "colour": "red",
+          "note": "low resistance"
+        }
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the inductor. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "HOW YOUR PHONE",
+    "line2": "FEELS HEAT",
+    "label": "THERMISTOR!",
+    "hero": "thermistor"
+  },
+  "youtube": {
+    "hook": "How Your Phone Knows It's Overheating",
+    "learn": "How a thermistor changes resistance with temperature, its symbol, and how it becomes a temperature sensor.",
+    "tags": [
+      "thermistor",
+      "NTC thermistor",
+      "temperature sensor",
+      "thermistor symbol",
+      "voltage divider"
+    ]
+  }
+}

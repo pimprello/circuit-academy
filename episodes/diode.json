@@ -1,0 +1,102 @@
+{
+  "slug": "diode",
+  "title": "THE DIODE",
+  "accent_from": 3,
+  "part": "diode",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This part is a one-way street for electricity.",
+      "show": {
+        "type": "hook",
+        "part": "diode"
+      }
+    },
+    {
+      "key": "look",
+      "say": "Current can only flow one way through a diode. The silver band marks the cathode, the end current flows out of.",
+      "show": {
+        "type": "picture",
+        "part": "diode",
+        "labels": [
+          {
+            "text": "band = cathode",
+            "colour": "yellow",
+            "side": "right",
+            "anchor": "band",
+            "y": -1.4
+          },
+          {
+            "text": "anode",
+            "colour": "pink",
+            "side": "left",
+            "anchor": "anode",
+            "y": -1.4
+          }
+        ]
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "The symbol is a triangle pointing at a bar. Current flows the way the triangle points.",
+      "show": {
+        "type": "symbol",
+        "part": "diode",
+        "notes": [
+          "triangle  →  bar  =  current"
+        ]
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "Facing the right way, current flows and the bulb lights up.",
+      "show": {
+        "type": "circuit",
+        "circuit": "diode_lamp"
+      }
+    },
+    {
+      "key": "reverse",
+      "say": "Flip it around and it blocks the current. That's how chargers turn AC into DC.",
+      "show": {
+        "type": "compare",
+        "left": {
+          "title": "FORWARD",
+          "part": "diode",
+          "colour": "green",
+          "note": "current flows"
+        },
+        "right": {
+          "title": "REVERSE",
+          "part": "diode_rev",
+          "colour": "red",
+          "note": "blocked"
+        }
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the capacitor. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "A ONE-WAY STREET",
+    "line2": "FOR CURRENT",
+    "label": "DIODE!",
+    "hero": "diode"
+  },
+  "youtube": {
+    "hook": "The One-Way Street for Electricity",
+    "learn": "How a diode only lets current flow one way, which end is the cathode, its symbol, and how chargers use diodes to turn AC into DC.",
+    "tags": [
+      "diode",
+      "rectifier",
+      "diode symbol",
+      "cathode band",
+      "AC to DC"
+    ]
+  }
+}

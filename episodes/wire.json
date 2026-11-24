@@ -56,19 +56,14 @@
     "hero": "wire"
   },
   "youtube": {
-    "title": "What's Actually Inside a Wire? ⚡ #electronics",
-    "description": "Every circuit depends on the humble wire. Copper core, plastic insulation, how wires are drawn in circuit diagrams, why a dot means connected, and why thicker wire stays cooler.\n\nOne electronics component explained every day. Subscribe so you don't miss the next one.\n\n#electronics #engineering #physics #stem #learnelectronics #shorts",
+    "hook": "What's Actually Inside a Wire?",
+    "learn": "Copper core, plastic insulation, how a wire is drawn in a circuit diagram, why a dot means connected, and why thicker wire stays cooler.",
     "tags": [
-      "electronics",
       "wire",
       "copper wire",
+      "electrical wire",
       "circuit diagram",
-      "electronics for beginners",
-      "physics",
-      "stem",
-      "how it works",
-      "engineering",
-      "learn electronics"
+      "wire gauge"
     ]
   }
 }

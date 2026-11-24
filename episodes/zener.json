@@ -1,0 +1,68 @@
+{
+  "slug": "zener",
+  "title": "THE ZENER",
+  "accent_from": 3,
+  "part": "zener",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This diode is designed to be used backwards.",
+      "show": {
+        "type": "hook",
+        "part": "zener"
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "A Zener diode looks like a normal diode, but its bar has little bent ends.",
+      "show": {
+        "type": "symbol",
+        "part": "zener",
+        "notes": [
+          "bent bar  =  Zener"
+        ]
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "Connected in reverse, it holds the voltage across it steady, here at five point one volts, even when the supply changes.",
+      "show": {
+        "type": "circuit",
+        "circuit": "zener_regulator"
+      }
+    },
+    {
+      "key": "fact",
+      "say": "That fixed voltage is called the Zener voltage, and you can buy them in lots of different values.",
+      "show": {
+        "type": "formula",
+        "text": "Vz = 5.1 V",
+        "note": "Zener voltage"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the op-amp. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "A DIODE USED",
+    "line2": "BACKWARDS?!",
+    "label": "ZENER!",
+    "hero": "zener"
+  },
+  "youtube": {
+    "hook": "The Diode That Works Backwards",
+    "learn": "How a Zener diode holds a steady voltage in reverse, its symbol, and how it makes a simple voltage regulator.",
+    "tags": [
+      "zener diode",
+      "voltage regulator",
+      "zener voltage",
+      "diode",
+      "reverse breakdown"
+    ]
+  }
+}

@@ -86,19 +86,14 @@
     "hero": "cell"
   },
   "youtube": {
-    "title": "This Isn't Actually a Battery 🔋 #electronics",
-    "description": "That AA you call a battery is really a cell. How a cell pushes current around a circuit, which end is positive, how it's drawn in a circuit diagram, and how cells in series add up to make a real battery.\n\nOne electronics component explained every day. Subscribe so you don't miss the next one.\n\n#electronics #battery #physics #stem #learnelectronics #shorts",
+    "hook": "This Isn't Actually a Battery",
+    "learn": "Why an AA is really a cell, which end is positive, the long-line short-line symbol, and how cells in series add up to make a real battery.",
     "tags": [
-      "electronics",
       "cell",
       "battery",
       "AA battery",
-      "circuit symbol",
       "series circuit",
-      "electronics for beginners",
-      "physics",
-      "stem",
-      "how it works"
+      "battery symbol"
     ]
   }
 }
