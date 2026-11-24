@@ -24,6 +24,23 @@ flow = InstalledAppFlow.from_client_config(
 print("\nYour browser will open. Sign in, choose the ELECTRONICS channel, and allow access.\n")
 creds = flow.run_local_server(port=0, access_type="offline", prompt="consent")
 
+# Check right away that this token works with this client, the same way GitHub will use it.
+from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
+test = Credentials(None, refresh_token=creds.refresh_token, token_uri="https://oauth2.googleapis.com/token",
+                   client_id=client_id, client_secret=client_secret)
+try:
+    test.refresh(Request())
+    print("\nChecked: this token works with this client.")
+except Exception as e:
+    print("\nThis token does NOT work with this client:", e)
+    input("Press Enter to close."); sys.exit()
+
+from pathlib import Path
+out = Path(__file__).with_name("github_secrets.txt")
+out.write_text(f"YT_CLIENT_ID\n{client_id}\n\nYT_CLIENT_SECRET\n{client_secret}\n\nYT_REFRESH_TOKEN\n{creds.refresh_token}\n")
+print("Also saved to", out, "- copy each value from there, then delete the file.")
+
 print("\nDone. Add these three secrets to the circuit-academy repo on GitHub:\n")
 print("  YT_CLIENT_ID      =", client_id)
 print("  YT_CLIENT_SECRET  =", client_secret)
