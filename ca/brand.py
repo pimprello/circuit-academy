@@ -98,8 +98,8 @@ class Banner(Scene):
         tag = Text("Electronics explained in under a minute  ·  a new part twice a day",
                    font=S.BODY_FONT, weight=MEDIUM, font_size=40, color="#B9C6E4")
         tag.scale_to_fit_width(min(tag.width, 8.0)).next_to(accent, DOWN, buff=0.2)
-        block = VGroup(b, name, accent, tag)
-        block.move_to(P(0, 0.15))
-        tag.set_x(0); accent.set_x(name.get_x())
+        block = VGroup(b, name, accent)            # tagline removed (style decision)
+        block.move_to(P(0, 0.05))
+        accent.set_x(name.get_x())
         sh = name.copy().set_fill(BLACK, 0.55).shift(P(0.07, -0.08))
-        self.add(sh, name, neon(accent, S.CYAN), accent, tag, b)
+        self.add(sh, name, neon(accent, S.CYAN), accent, b)
