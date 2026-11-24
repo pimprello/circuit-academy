@@ -78,7 +78,7 @@ jobs:
         run: |
           git config user.name "upload-bot"
           git config user.email "upload-bot@users.noreply.github.com"
-          git add state/uploads.json state/thumbs
+          git add state/
           git diff --cached --quiet && exit 0
           git commit -qm "Uploaded ${{ needs.pick.outputs.episode }} [skip ci]"
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
