@@ -114,7 +114,7 @@ def lamp_pic():
 
 
 PICTURES = {
-    "wire": lambda: copper_wire(6.0),
+    "wire": lambda: copper_wire(6.0, r=0.45, strip=1.3),
     "cell": aa_cell,
     "resistor": resistor_pic,
     "lamp": lamp_pic,

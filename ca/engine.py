@@ -3,8 +3,8 @@ what the narrator says and which visual to show.  Visual types:
 
   hook       big drawn component crackling with electricity, flash, title slam   {"part"}
   picture    drawn component with callout labels                               {"part", "labels":[{"text","colour","side","at":[x,y]}]}
-  symbol     schematic symbol, big, with pin labels and notes                  {"part", "pins":{"a":"+"}, "notes":[...], "tag"}
-  circuit    named circuit (ca/circuits.py) drawn, then current flows          {"circuit", "tag"}
+  symbol     schematic symbol, big, with pin labels and notes                  {"part", "pins":{"a":"+"}, "notes":[...]}
+  circuit    named circuit (ca/circuits.py) drawn, then current flows          {"circuit"}
   compare    two cards side by side, each a symbol or picture                  {"left":{...}, "right":{...}}
   formula    a big equation                                                    {"text", "note"}
   outro      cinematic next-episode reveal + subscribe and bell (no captions)  (automatic)
@@ -74,6 +74,23 @@ def bolt(a, b, jag=0.3, forks=1, rng=np.random):
     return g
 
 
+def ring_bell(bell):
+    """A real bell swing: the body pivots from its top knob with a damped swing, and the clapper
+    lags behind it (follows the swing a beat later, a little wider), like a phone notification bell."""
+    body = VGroup(bell[0], bell[1])
+    clap = bell[2]
+    pivot = bell[1].get_center()
+    body0, clap0 = body.copy(), clap.copy()
+
+    def upd(m, a):
+        t = a * 1.5
+        ang = 0.42 * np.exp(-2.6 * t) * np.sin(2 * PI * 3.2 * t)
+        lag = 0.55 * np.exp(-2.4 * max(0, t - 0.05)) * np.sin(2 * PI * 3.2 * max(0, t - 0.05))
+        body.become(body0.copy().rotate(ang, about_point=pivot))
+        clap.become(clap0.copy().rotate(lag, about_point=pivot))
+    return UpdateFromAlphaFunc(bell, upd, rate_func=linear)
+
+
 class EpisodeShort(Scene):
     def construct(self):
         np.random.seed(7)
@@ -117,7 +134,7 @@ class EpisodeShort(Scene):
     def show_circuit(self, c, tag=None, flow=True):
         """Draw a circuit, then run current round it and light its loads. Returns things to fade out."""
         items = [c]
-        if tag:
+        if False:   # top tag chips removed (style decision)
             chip = label_chip(tag, S.CYAN).move_to(P(0, 2.95))
             items.append(chip)
             self.play(FadeIn(chip, shift=DOWN * 0.2), run_time=0.3)
@@ -147,32 +164,46 @@ class EpisodeShort(Scene):
 
     # ── generic beats ────────────────────────────────────────────────────
     def beat_hook(self, d, b):
-        """Frame one already moving: the component crackles with electricity, then flash + title slam."""
+        """Clean, premium opening: the part is already on screen and moving at frame one (gentle push-in
+        with an energy ring pulsing out behind it), a soft light sweep glints across it, the title eases in."""
         t0 = self.renderer.time
-        part = b["show"]["part"]
+        sh = b["show"]
+        part = sh["part"]
         pic = PARTS.picture(part)
-        pic.scale_to_fit_width(min(6.6, pic.width * 1.25)).move_to(P(0, 0.4))
-        halo = glow_disc(PARTS.colour(part), 2.8, 14, 0.12).move_to(pic)
-        R = max(pic.width, pic.height) / 2 + 0.35
-        rng = np.random.RandomState(11)
-        c = pic.get_center()
+        pic.scale_to_fit_width(min(6.2, pic.width * 1.2)).move_to(P(0, 0.5))
+        col = PARTS.colour(part)
+        halo = glow_disc(col, 2.6, 16, 0.10).move_to(pic)
+        rings = VGroup(*[Circle(radius=1.0, stroke_color=col, stroke_width=4, stroke_opacity=0.5).move_to(pic)
+                         for _ in range(2)])
+        pic.scale(1.12)
+        self.add(halo, pic)
+        # frame one: the part settles in while the first energy ring travels outwards
+        self.play(pic.animate.scale(1 / 1.12), halo.animate.scale(1.12),
+                  rings[0].animate.scale(4.2).set_stroke(opacity=0), run_time=0.9, rate_func=rate_functions.ease_out_cubic)
+        sweep = VGroup(*[Rectangle(width=w, height=3.2, stroke_width=0, fill_color=WHITE, fill_opacity=o)
+                         for w, o in ((0.8, 0.04), (0.4, 0.07), (0.12, 0.16))]).rotate(-20 * DEGREES)
+        sweep.move_to(pic.get_left() + LEFT * 1.0)
+        self.add(sweep)
+        self.play(self.title_reveal(), sweep.animate.move_to(pic.get_right() + RIGHT * 1.0),
+                  rings[1].animate.scale(4.2).set_stroke(opacity=0), run_time=0.8, rate_func=smooth)
+        self.remove(sweep, rings)
+        float_t = max(0.3, d - (self.renderer.time - t0) - (0 if sh.get("keep") else 0.45))
+        self.play(pic.animate.shift(UP * 0.12), halo.animate.scale(0.94), run_time=float_t, rate_func=there_and_back)
+        if sh.get("keep"):
+            self.remove(halo)
+            self.hook_pic = pic
+        else:
+            self.play(FadeOut(VGroup(halo, pic), shift=UP * 0.3), run_time=0.45)
 
-        def aura():
-            g = VGroup()
-            for _ in range(3):
-                a = rng.uniform(0, TAU)
-                p0 = c + np.array([np.cos(a) * pic.width / 2 * 0.9, np.sin(a) * pic.height / 2 * 0.9, 0])
-                p1 = c + np.array([np.cos(a + rng.uniform(-0.5, 0.5)) * R * 1.25, np.sin(a) * R * 0.9 + rng.uniform(-0.4, 0.4), 0])
-                g.add(bolt(p0, p1, 0.18, 1, rng))
-            return g
-        arcs = aura()
-        arcs.add_updater(lambda m, dt: m.become(aura()))
-        self.add(halo, pic, arcs)
-        self.play(pic.animate.scale(0.92), halo.animate.scale(1.15), run_time=0.6, rate_func=smooth)
-        self.title_slam(pic)
-        self.play(halo.animate.scale(0.9), run_time=max(0.2, d - (self.renderer.time - t0) - 0.5), rate_func=there_and_back)
-        arcs.clear_updaters()
-        self.play(FadeOut(VGroup(arcs, halo, pic), shift=UP * 0.3), run_time=0.45)
+    def title_reveal(self):
+        """Title eases down into place while its accent line draws out from the centre."""
+        self.title.scale(1.12).shift(UP * 0.15).set_opacity(0)
+        line = self.accent.copy()
+        self.accent.put_start_and_end_on(line.get_center() + LEFT * 0.01, line.get_center() + RIGHT * 0.01)
+        self.header[0].set_opacity(0)
+        return AnimationGroup(self.title.animate.scale(1 / 1.12).shift(DOWN * 0.15).set_opacity(1),
+                              self.accent.animate.put_start_and_end_on(line.get_start(), line.get_end()),
+                              self.header[0].animate.set_opacity(1))
 
     def beat_picture(self, d, b):
         t0 = self.renderer.time
@@ -199,7 +230,7 @@ class EpisodeShort(Scene):
         sh = b["show"]
         sym = PARTS.symbol(sh["part"]).scale(sh.get("scale", 2.0)).move_to(P(0, 0.7))
         items = [sym]
-        if sh.get("tag"):
+        if False:   # top tag chips removed (style decision)
             chip = label_chip(sh["tag"], S.CYAN).move_to(P(0, 2.95))
             items.append(chip)
             self.play(FadeIn(chip, shift=DOWN * 0.2), run_time=0.3)
@@ -335,78 +366,15 @@ class EpisodeShort(Scene):
         ring2 = Circle(radius=0.62, stroke_color=S.YELLOW, stroke_width=5).move_to(bell_g)
         self.play(cur.animate.scale(1 / 0.82, about_point=cur.tip.get_center()), bell_bg.animate.set_fill(S.YELLOW),
                   bell.animate.set_fill("#1A1F2E"), ring2.animate.scale(1.8).set_stroke(opacity=0), run_time=0.3)
-        self.play(Wiggle(bell, scale_value=1.15, rotation_angle=0.12 * TAU, n_wiggles=4), run_time=0.7)
+        self.play(ring_bell(bell), run_time=1.5)
         self.wait_until(t0, d)
 
 
     # ── the Wire episode's own beats ─────────────────────────────────────
-    def beat_wire_hook(self, d, b=None):
-        """First seconds: motion from frame one. Two live wires, an electric arc cracking between them,
-        current racing along, a white flash and the title slamming in."""
-        left = copper_wire(3.4).move_to(P(-2.35, 0.6))
-        right = copper_wire(3.4).rotate(PI).move_to(P(2.35, 0.6))
-        tip_l = left[0].get_right() + LEFT * 0.05
-        tip_r = right[0].get_left() + RIGHT * 0.05
-        stage = VGroup(left, right).scale(1.2, about_point=P(0, 0.6))
-        tip_l, tip_r = left[0].get_right() + LEFT * 0.05, right[0].get_left() + RIGHT * 0.05
-
-        def bolt():
-            pts = [tip_l]
-            n = 9
-            for i in range(1, n):
-                q = tip_l + (tip_r - tip_l) * i / n
-                pts.append(q + UP * np.random.uniform(-0.38, 0.38))
-            pts.append(tip_r)
-            paths = [pts]
-            for _ in range(2):   # little forks crackling off the main bolt
-                k = np.random.randint(2, n - 1)
-                p0 = pts[k]
-                f = [p0]
-                for j in range(3):
-                    f.append(f[-1] + P(np.random.uniform(-0.12, 0.2), np.random.choice([-1, 1]) * np.random.uniform(0.1, 0.22)))
-                paths.append(f)
-            g = VGroup()
-            for path in paths:
-                for w, o, c in ((24, 0.10, S.CYAN), (11, 0.35, S.CYAN), (4, 1, WHITE)):
-                    m = VMobject(stroke_color=c, stroke_width=w * (1 if path is pts else 0.6), stroke_opacity=o)
-                    m.set_points_as_corners(path)
-                    g.add(m)
-            return g
-
-        arc = bolt()
-        arc.add_updater(lambda m, dt: m.become(bolt()))
-        spark_glow = glow_disc(S.CYAN, 1.2, 10, 0.18).move_to((tip_l + tip_r) / 2)
-        # current racing along both wires toward the gap
-        run_l = Line(left.get_left() + RIGHT * 0.3, tip_l)
-        run_r = Line(right.get_right() + LEFT * 0.3, tip_r)
-        dl, tl = flow_dots(run_l, 6, 0.9, S.YELLOW, 0.06)
-        dr, tr = flow_dots(run_r, 6, 0.9, S.YELLOW, 0.06)
-        self.add(stage, spark_glow, arc, dl, tl, dr, tr)
-        # frame one is already busy: push in slightly while the arc crackles
-        self.play(stage.animate.scale(0.9, about_point=P(0, 0.6)), spark_glow.animate.scale(1.3),
-                  run_time=0.6, rate_func=smooth)
-        # white flash + title slams down with a small screen shake
-        flash = Rectangle(width=9, height=FH + 1, stroke_width=0, fill_color=WHITE, fill_opacity=0.85)
-        self.title.scale(1.8).set_opacity(0)
-        self.add(flash)
-        self.play(FadeOut(flash), self.title.animate.scale(1 / 1.8).set_opacity(1), Create(self.accent),
-                  FadeIn(self.header[0]), run_time=0.35, rate_func=rate_functions.ease_out_back)
-        for v in (P(0.08, -0.05), P(-0.12, 0.06), P(0.06, 0.04), P(-0.02, -0.05)):
-            self.play(stage.animate.shift(v), self.header.animate.shift(v * 0.5), run_time=0.045)
-        self.play(stage.animate.move_to(P(0, 0.6)), self.header.animate.move_to(self.header_home), run_time=0.08)
-        rest = d - (self.renderer.time - self.hook_t0) - 0.55
-        if rest > 0.05:
-            self.wait(rest)
-        # wires join: the arc closes into one wire for the next beat
-        arc.clear_updaters()
-        stop_flow(self, dl, tl); stop_flow(self, dr, tr)
-        wire = copper_wire(6.4).rotate(-12 * DEGREES).move_to(P(0, 0.8))
-        self.play(FadeOut(VGroup(arc, spark_glow, dl, dr)), ReplacementTransform(stage, wire), run_time=0.55)
-        self.hook_wire = wire
-
     def beat_wire_inside(self, d, b=None):
-        wire = self.hook_wire
-        self.play(wire.animate.rotate(12 * DEGREES).scale(0.82).move_to(P(0, 2.25)), run_time=0.7)
+        wire = getattr(self, "hook_pic", None) or copper_wire(5.2).move_to(P(0, 2.25))
+        self.add(wire)
+        self.play(wire.animate.scale_to_fit_width(5.2).move_to(P(0, 2.25)), run_time=0.7)
         xs = cross_section().move_to(P(-1.55, -0.35))
         cu = label_chip("Copper core", "#FFB070").move_to(P(1.75, 0.35))
         ins = label_chip("Insulation", "#7FB2FF").move_to(P(1.75, -1.05))
@@ -428,7 +396,8 @@ class EpisodeShort(Scene):
         wires = VGroup(poly((L, 1.3), (L, T), (R, T), (R, 1.3)), poly((R, -1.3), (R, Bt), (L, Bt), (L, -1.3)))
         wires.set_stroke(S.CYAN, 7)
         tag = label_chip("wire  =  straight line", S.CYAN).move_to(P(0, 2.6))
-        self.play(FadeIn(tag, shift=DOWN * 0.2), Create(bat), Create(lamp), FadeIn(bl), run_time=0.8)
+        tag = VGroup()   # top tag chip removed (style decision)
+        self.play(Create(bat), Create(lamp), FadeIn(bl), run_time=0.8)
         self.play(Create(wires[0]), Create(wires[1]), run_time=1.1, rate_func=smooth)
         loop = poly((L, Bt), (L, T), (R, T), (R, Bt), closed=True)
         dots, tr = flow_dots(loop, 18, 0.2)

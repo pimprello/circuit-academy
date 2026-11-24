@@ -48,7 +48,6 @@
       "show": {
         "type": "symbol",
         "part": "cell",
-        "tag": "circuit symbol",
         "notes": [
           "long line  =  +",
           "short line  =  −"
@@ -61,8 +60,7 @@
       "say": "Connect it to a bulb, and current flows out of the positive end, through the bulb, and back to the negative end.",
       "show": {
         "type": "circuit",
-        "circuit": "cell_lamp",
-        "tag": "one cell, one bulb"
+        "circuit": "cell_lamp"
       }
     },
     {
@@ -70,8 +68,7 @@
       "say": "Join cells end to end and their voltages add up. Two one point five volt cells give you three volts. That's what a real battery is.",
       "show": {
         "type": "circuit",
-        "circuit": "cells_series",
-        "tag": "cells in series"
+        "circuit": "cells_series"
       }
     },
     {
