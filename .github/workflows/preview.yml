@@ -71,8 +71,8 @@ jobs:
         with:
           name: narration
           path: narration/
-      - name: Python packages
-        run: pip install -r requirements.txt || pip install --break-system-packages -r requirements.txt
+      - name: Python packages (Manim, NumPy and Pillow come with the image)
+        run: pip install soundfile || pip install --break-system-packages soundfile
       - name: Make the videos
         run: |
           for e in ${{ inputs.episodes || 'wire cell' }}; do python make_short.py "$e"; done
