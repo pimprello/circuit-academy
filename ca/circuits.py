@@ -52,7 +52,7 @@ def cell_lamp():
     return battery_lamp("1.5 V", cells=1)
 
 
-def cells_series(L=-1.7, R=2.5, T=2.6, Bt=-2.6):
+def cells_series(L=-1.7, R=2.5, T=2.3, Bt=-2.3):
     """Two 1.5 V cells, + to -, feeding a lamp: 3 V in total."""
     c = Circuit()
     c.part(Battery(cells=1), (L, 1.1), -90, 1.0)
