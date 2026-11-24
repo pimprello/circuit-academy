@@ -19,10 +19,10 @@ flow = InstalledAppFlow.from_client_config(
     {"installed": {"client_id": client_id, "client_secret": client_secret,
                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                    "token_uri": "https://oauth2.googleapis.com/token",
-                   "redirect_uris": ["http://localhost"]}},
+                   "redirect_uris": ["http://localhost:8080/"]}},
     scopes=["https://www.googleapis.com/auth/youtube.upload", "https://www.googleapis.com/auth/youtube"])
 print("\nYour browser will open. Sign in, choose the ELECTRONICS channel, and allow access.\n")
-creds = flow.run_local_server(port=0, access_type="offline", prompt="consent")
+creds = flow.run_local_server(port=8080, access_type="offline", prompt="consent")
 
 # Check right away that this token works with this client, the same way GitHub will use it.
 from google.oauth2.credentials import Credentials
