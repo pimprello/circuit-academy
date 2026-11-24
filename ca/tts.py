@@ -78,7 +78,9 @@ def speak(text, name, out_dir="narration"):
     meta = out / f"{name}.json"
     if meta.exists():
         old = json.loads(meta.read_text())
-        if old.get("text") == text and Path(old["file"]).exists():
+        f = out / Path(old.get("file", "")).name      # stored by name, so it works from any folder/machine
+        if old.get("text") == text and f.exists():
+            old["file"] = str(f)
             return old
     words, f, engine = None, None, None
     try:
@@ -103,7 +105,8 @@ def speak(text, name, out_dir="narration"):
     if len(src) == len(words):
         for w, s in zip(words, src):
             w["text"] = s
-    data = {"text": text, "engine": engine, "file": str(f), "duration": duration(f), "words": words}
+    data = {"text": text, "engine": engine, "file": f.name, "duration": duration(f), "words": words}
     meta.write_text(json.dumps(data, indent=1))
+    data["file"] = str(f)
     print(f"  voice {name}: {engine}, {data['duration']:.2f}s, {len(words)} words")
     return data
