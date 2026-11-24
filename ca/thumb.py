@@ -1,6 +1,6 @@
-"""Hand-drawn custom thumbnail for THE WIRE (1080x1920, vertical for Shorts).
+"""Hand-drawn custom thumbnail for every episode (1080x1920, vertical for Shorts).
 
-Built as its own illustration, not a frame from the video:
+Each is its own illustration, not a frame from the video (episodes/<slug>.json "thumb"):
 - a sunburst of light behind a big 3D cut wire seen end-on, copper strands glowing hot
 - a curved red arrow pointing at the copper
 - a two-line curiosity headline with a gradient fill, thick outline and drop shadow
@@ -9,7 +9,10 @@ import numpy as np
 from manim import *
 from ca import style as S
 from ca.symbols import P
-from ca.short_wire import glow_disc
+from ca.kit import glow_disc
+from ca import parts as PARTS
+import json, os
+from pathlib import Path
 
 config.frame_width = 8
 config.frame_height = 8 * 16 / 9
@@ -91,17 +94,47 @@ def scribble_circle(centre, rx, ry, colour="#FF2E2E"):
     return m
 
 
-class ThumbWire(Scene):
+
+def hero_wire(c):
+    """Thick cable seen end-on. Returns (drawing, point the arrow aims at)."""
+    return VGroup(wire_end_on(c), sparks(c)), c + P(-1.2, 0.25)
+
+
+def hero_cell(c):
+    cell = PARTS.aa_cell(length=5.4, h=1.75).rotate(28 * DEGREES).move_to(c)
+    s = sparks(cell.plus_end.get_center(), n=14, seed=7).scale(0.6, about_point=cell.plus_end.get_center())
+    return VGroup(glow_disc("#5BF2A6", 2.2, 12, 0.10).move_to(c), cell, s), c + P(-0.9, 0.1)
+
+
+def hero_generic(part):
+    def make(c):
+        pic = PARTS.picture(part)
+        pic.scale_to_fit_width(5.6).move_to(c)
+        return VGroup(pic, sparks(c)), pic.get_left() + P(0.4, 0.3)
+    return make
+
+
+HEROES = {"wire": hero_wire, "cell": hero_cell}
+
+
+class Thumb(Scene):
     def construct(self):
+        ep = json.loads((Path(__file__).resolve().parent.parent / "episodes" /
+                         f"{os.environ.get('EPISODE', 'wire')}.json").read_text(encoding="utf-8"))
+        th = ep["thumb"]
+        warm = PARTS.colour(th["hero"])
         hero_c = P(0.45, -1.35)
         self.add(glow_disc("#0F4C75", 7.5, 20, 0.12).move_to(P(0, -0.5)))
         self.add(sunburst(hero_c))
         self.add(glow_disc("#FF7A1A", 3.6, 18, 0.14).move_to(hero_c))
-        self.add(wire_end_on(hero_c), sparks(hero_c))
+        hero, aim = HEROES.get(th["hero"], hero_generic(th["hero"]))(hero_c)
+        self.add(hero)
 
-        lab = headline("COPPER!", 100, ["#FFE2BC", "#FF9A3C"], stroke=12, shadow=0.08).rotate(8 * DEGREES)
+        lab = headline(th["label"], 100, ["#FFE2BC", "#FF9A3C"], stroke=12, shadow=0.08).rotate(8 * DEGREES)
+        if lab.width > 4.6:
+            lab.scale_to_fit_width(4.6)
         lab.move_to(P(-1.45, 1.3))
-        arrow = CurvedArrow(P(-2.45, 0.7), hero_c + P(-1.2, 0.25), angle=0.9, stroke_width=14,
+        arrow = CurvedArrow(lab.get_bottom() + P(-0.5, -0.1), aim, angle=0.9, stroke_width=14,
                             color="#FF2E2E", tip_length=0.42)
         self.add(arrow, lab)
 
@@ -110,10 +143,14 @@ class ThumbWire(Scene):
                        for i, r in enumerate(np.arange(4.4, 11, 0.6))])
         self.add(vig)
 
-        l1 = headline("WHAT'S INSIDE", 150, ["#FFFFFF", "#DDE7FF"])
-        l2 = headline("A WIRE?", 262, ["#FFF27A", "#FFC21A", "#FF9A1A"], stroke=20, shadow=0.16)
+        l1 = headline(th["line1"], 150, ["#FFFFFF", "#DDE7FF"])
+        l2 = headline(th["line2"], 262, ["#FFF27A", "#FFC21A", "#FF9A1A"], stroke=20, shadow=0.16)
+        l2.scale_to_fit_width(min(7.4, l2.width))
+        l1.scale_to_fit_height(l2.height * 0.55)
+        if l1.width > 7.4:
+            l1.scale_to_fit_width(7.4)
         head = VGroup(l1, l2).arrange(DOWN, buff=-0.05)
-        head.scale_to_fit_width(7.4).rotate(-3 * DEGREES).move_to(P(0, 4.0))
+        head.rotate(-3 * DEGREES).move_to(P(0, 4.0))
         self.add(head)
 
         bolt = Polygon(P(0.12, 0.5), P(-0.28, -0.05), P(-0.02, -0.05), P(-0.16, -0.5), P(0.28, 0.08), P(0.02, 0.08),

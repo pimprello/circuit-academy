@@ -1,0 +1,27 @@
+{
+  "note": "Upload order. One episode a day. Each entry needs episodes/<slug>.json before its day comes round.",
+  "order": [
+    {"slug": "wire",       "name": "THE WIRE",       "part": "wire"},
+    {"slug": "cell",       "name": "THE CELL",       "part": "cell"},
+    {"slug": "resistor",   "name": "THE RESISTOR",   "part": "resistor"},
+    {"slug": "switch",     "name": "THE SWITCH",     "part": "switch"},
+    {"slug": "lamp",       "name": "THE BULB",       "part": "lamp"},
+    {"slug": "led",        "name": "THE LED",        "part": "led"},
+    {"slug": "diode",      "name": "THE DIODE",      "part": "diode"},
+    {"slug": "capacitor",  "name": "THE CAPACITOR",  "part": "capacitor"},
+    {"slug": "fuse",       "name": "THE FUSE",       "part": "fuse"},
+    {"slug": "potentiometer", "name": "THE POT",     "part": "potentiometer"},
+    {"slug": "ldr",        "name": "THE LDR",        "part": "ldr"},
+    {"slug": "thermistor", "name": "THE THERMISTOR", "part": "thermistor"},
+    {"slug": "inductor",   "name": "THE INDUCTOR",   "part": "inductor"},
+    {"slug": "transistor", "name": "THE TRANSISTOR", "part": "transistor"},
+    {"slug": "mosfet",     "name": "THE MOSFET",     "part": "mosfet"},
+    {"slug": "relay",      "name": "THE RELAY",      "part": "relay"},
+    {"slug": "motor",      "name": "THE MOTOR",      "part": "motor"},
+    {"slug": "transformer","name": "THE TRANSFORMER","part": "transformer"},
+    {"slug": "zener",      "name": "THE ZENER",      "part": "zener"},
+    {"slug": "op-amp",     "name": "THE OP-AMP",     "part": "op-amp"},
+    {"slug": "555",        "name": "THE 555 TIMER",  "part": "555 timer"},
+    {"slug": "crystal",    "name": "THE CRYSTAL",    "part": "crystal"}
+  ]
+}

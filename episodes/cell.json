@@ -1,0 +1,107 @@
+{
+  "slug": "cell",
+  "title": "THE CELL",
+  "accent_from": 3,
+  "part": "cell",
+  "beats": [
+    {
+      "key": "hook",
+      "say": "This is not actually a battery. It's a cell, and it's a tiny chemical power station.",
+      "show": {
+        "type": "hook",
+        "part": "cell"
+      }
+    },
+    {
+      "key": "inside",
+      "say": "Inside, a chemical reaction pushes charge around a circuit. The end with the bump is positive. The flat end is negative.",
+      "show": {
+        "type": "picture",
+        "part": "cell",
+        "labels": [
+          {
+            "text": "+  positive",
+            "colour": "green",
+            "side": "right",
+            "at": [
+              2.45,
+              0
+            ],
+            "y": -1.0
+          },
+          {
+            "text": "−  negative",
+            "colour": "red",
+            "side": "left",
+            "at": [
+              -2.25,
+              0
+            ],
+            "y": -1.0
+          }
+        ]
+      }
+    },
+    {
+      "key": "symbol",
+      "say": "In a circuit diagram, a cell is a long line and a short line. The long line is the positive side.",
+      "show": {
+        "type": "symbol",
+        "part": "cell",
+        "tag": "circuit symbol",
+        "notes": [
+          "long line  =  +",
+          "short line  =  −"
+        ],
+        "scale": 2.6
+      }
+    },
+    {
+      "key": "circuit",
+      "say": "Connect it to a bulb, and current flows out of the positive end, through the bulb, and back to the negative end.",
+      "show": {
+        "type": "circuit",
+        "circuit": "cell_lamp",
+        "tag": "one cell, one bulb"
+      }
+    },
+    {
+      "key": "series",
+      "say": "Join cells end to end and their voltages add up. Two one point five volt cells give you three volts. That's what a real battery is.",
+      "show": {
+        "type": "circuit",
+        "circuit": "cells_series",
+        "tag": "cells in series"
+      }
+    },
+    {
+      "key": "outro",
+      "say": "Next time: the resistor. Subscribe so you don't miss it.",
+      "show": {
+        "type": "outro"
+      }
+    }
+  ],
+  "thumb": {
+    "line1": "THIS ISN'T",
+    "line2": "A BATTERY?!",
+    "label": "IT'S A CELL!",
+    "hero": "cell"
+  },
+  "youtube": {
+    "title": "This Isn't Actually a Battery 🔋 #electronics",
+    "description": "That AA you call a battery is really a cell. How a cell pushes current around a circuit, which end is positive, how it's drawn in a circuit diagram, and how cells in series add up to make a real battery.\n\nOne electronics component explained every day. Subscribe so you don't miss the next one.\n\n#electronics #battery #physics #stem #learnelectronics #shorts",
+    "tags": [
+      "electronics",
+      "cell",
+      "battery",
+      "AA battery",
+      "circuit symbol",
+      "series circuit",
+      "electronics for beginners",
+      "physics",
+      "stem",
+      "how it works"
+    ]
+  }
+}

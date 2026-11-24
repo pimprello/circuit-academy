@@ -1,0 +1,20 @@
+{
+  "slug": "wire",
+  "title": "THE WIRE",
+  "accent_from": 3,
+  "part": "wire",
+  "beats": [
+    {"key": "hook",   "say": "Every circuit you have ever used depends on this one simple part.", "show": {"type": "wire_hook"}},
+    {"key": "inside", "say": "A wire is a path for electric current. Usually copper inside, with plastic insulation outside.", "show": {"type": "wire_inside"}},
+    {"key": "symbol", "say": "In a circuit diagram, a wire is just a straight line. Close the loop, and current flows.", "show": {"type": "wire_symbol"}},
+    {"key": "joins",  "say": "Where wires connect, we draw a dot. Lines that cross with no dot are not connected.", "show": {"type": "wire_joins"}},
+    {"key": "thick",  "say": "Thicker wire has less resistance, so it carries more current without getting hot.", "show": {"type": "wire_thick"}},
+    {"key": "outro",  "say": "Next time: the cell. Subscribe so you don't miss it.", "show": {"type": "outro"}}
+  ],
+  "thumb": {"line1": "WHAT'S INSIDE", "line2": "A WIRE?", "label": "COPPER!", "hero": "wire"},
+  "youtube": {
+    "title": "What's Actually Inside a Wire? ⚡ #electronics",
+    "description": "Every circuit depends on the humble wire. Copper core, plastic insulation, how wires are drawn in circuit diagrams, why a dot means connected, and why thicker wire stays cooler.\n\nOne electronics component explained every day. Subscribe so you don't miss the next one.\n\n#electronics #engineering #physics #stem #learnelectronics #shorts",
+    "tags": ["electronics", "wire", "copper wire", "circuit diagram", "electronics for beginners", "physics", "stem", "how it works", "engineering", "learn electronics"]
+  }
+}
