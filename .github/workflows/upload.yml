@@ -60,6 +60,13 @@ jobs:
         with:
           name: videos
           path: out
+      - name: Add thumbnails to earlier videos (once the channel is verified)
+        continue-on-error: true
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python scripts/upload.py --backfill
       - name: Upload with thumbnail
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
@@ -71,7 +78,7 @@ jobs:
         run: |
           git config user.name "upload-bot"
           git config user.email "upload-bot@users.noreply.github.com"
-          git add state/uploads.json
+          git add state/uploads.json state/thumbs
           git diff --cached --quiet && exit 0
           git commit -qm "Uploaded ${{ needs.pick.outputs.episode }} [skip ci]"
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done

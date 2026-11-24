@@ -65,6 +65,11 @@ def upload(slug):
                 break
             time.sleep(5)
 
+    # keep the thumbnail in the repo so it can be attached later if YouTube refused it now
+    keep = ROOT / "state" / "thumbs" / f"{slug}.jpg"
+    keep.parent.mkdir(parents=True, exist_ok=True)
+    keep.write_bytes(thumb.read_bytes())
+
     state_p = ROOT / "state" / "uploads.json"
     state = json.loads(state_p.read_text())
     state["uploaded"].append({"slug": slug, "video_id": vid, "title": meta["title"], "thumbnail": thumb_ok,
@@ -72,6 +77,31 @@ def upload(slug):
     state_p.write_text(json.dumps(state, indent=1, ensure_ascii=False))
 
 
+def backfill_thumbnails():
+    """Attach thumbnails to earlier uploads that went up before the channel was verified."""
+    state_p = ROOT / "state" / "uploads.json"
+    state = json.loads(state_p.read_text())
+    todo = [u for u in state["uploaded"] if not u.get("thumbnail")]
+    if not todo:
+        return
+    yt = client()
+    for u in todo:
+        img = ROOT / "state" / "thumbs" / f"{u['slug']}.jpg"
+        if not img.exists():
+            continue
+        try:
+            yt.thumbnails().set(videoId=u["video_id"], media_body=MediaFileUpload(str(img), mimetype="image/jpeg")).execute()
+            u["thumbnail"] = True
+            print(f"  thumbnail added to earlier video {u['slug']}")
+        except HttpError as e:
+            print(f"  earlier thumbnails still refused ({e.resp.status}) - verify the channel at youtube.com/verify")
+            break
+    state_p.write_text(json.dumps(state, indent=1, ensure_ascii=False))
+
+
 if __name__ == "__main__":
-    for s in sys.argv[1:]:
-        upload(s)
+    if sys.argv[1:] == ["--backfill"]:
+        backfill_thumbnails()
+    else:
+        for s in sys.argv[1:]:
+            upload(s)
