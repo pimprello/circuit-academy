@@ -49,22 +49,27 @@ subprocess.run(["manim", "-r", "1080,1920", "--fps", "30", "--disable_caching", 
                 "ca/engine.py", "EpisodeShort"], check=True, env=env, **quiet)
 raw = f"media/videos/engine/1920p30/{slug}_raw.mp4"
 
-# 4. narration track: each beat's clip at its start time; light polish so it sits like a recorded voice
-cmd = ["ffmpeg", "-v", "error", "-y", "-i", raw]
+# 4. sound: narrator (placed per beat, lightly polished) + the sound-effects track logged by the animation
+from ca.sfx import build_track, load_cues
+sfx_wav = build_track(load_cues(slug), total, f"out/{slug}_sfx.wav")
+cmd = ["ffmpeg", "-v", "error", "-y", "-i", raw, "-i", str(sfx_wav)]
+sfx_chain = "[1:a]aresample=48000,volume=0.9[fx]"
 if voiced:
     for n in narr:
         cmd += ["-i", n["file"]]
-    delays = "".join(f"[{i + 1}:a]aresample=48000,adelay={int(s * 1000)}|{int(s * 1000)}[a{i}];" for i, s in enumerate(starts))
+    delays = "".join(f"[{i + 2}:a]aresample=48000,adelay={int(s * 1000)}|{int(s * 1000)}[a{i}];" for i, s in enumerate(starts))
     mix = "".join(f"[a{i}]" for i in range(len(beats)))
     voice_fx = ("highpass=f=75,equalizer=f=200:t=q:w=1:g=1.5,equalizer=f=3200:t=q:w=1.2:g=2,"
                 "acompressor=threshold=-20dB:ratio=2.5:attack=8:release=120:makeup=2,"
                 "aecho=0.8:0.6:28:0.08")   # a touch of room so it doesn't sound bone-dry / synthetic
-    fc = (f"[0:v]subtitles={ass}:fontsdir=assets/fonts[v];{delays}{mix}amix=inputs={len(beats)}:normalize=0,"
-          f"{voice_fx},loudnorm=I=-14:TP=-1.5:LRA=11,apad=whole_dur={total:.3f}[a]")
-    cmd += ["-filter_complex", fc, "-map", "[v]", "-map", "[a]", "-c:a", "aac", "-b:a", "192k", "-ar", "48000"]
+    fc = (f"[0:v]subtitles={ass}:fontsdir=assets/fonts[v];{delays}{mix}amix=inputs={len(beats)}:normalize=0,{voice_fx}[vo];"
+          f"{sfx_chain};[vo][fx]amix=inputs=2:normalize=0:weights=1 0.55,"
+          f"loudnorm=I=-14:TP=-1.5:LRA=11,apad=whole_dur={total:.3f}[a]")
 else:
-    cmd += ["-vf", f"subtitles={ass}:fontsdir=assets/fonts"]
-cmd += ["-c:v", "libx264", "-crf", "18", "-preset", "veryfast", "-pix_fmt", "yuv420p", "-t", f"{total:.3f}", f"out/{slug}.mp4"]
+    fc = (f"[0:v]subtitles={ass}:fontsdir=assets/fonts[v];{sfx_chain};[fx]loudnorm=I=-20:TP=-1.5,"
+          f"apad=whole_dur={total:.3f}[a]")
+cmd += ["-filter_complex", fc, "-map", "[v]", "-map", "[a]", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+        "-c:v", "libx264", "-crf", "18", "-preset", "veryfast", "-pix_fmt", "yuv420p", "-t", f"{total:.3f}", f"out/{slug}.mp4"]
 subprocess.run(cmd, check=True)
 print(f"done: out/{slug}.mp4", "(with narrator)" if voiced else "(silent)")
 

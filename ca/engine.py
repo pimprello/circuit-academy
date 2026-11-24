@@ -106,12 +106,20 @@ class EpisodeShort(Scene):
         self.header_home = self.header.get_center()
         self.hook_t0 = self.renderer.time
 
+        self.cues = []
         for b, d in zip(self.ep["beats"], durs):
             t0 = self.renderer.time
             getattr(self, "beat_" + b["show"]["type"].replace("-", "_"))(d, b)
             left = d - (self.renderer.time - t0)
             if left > 0.02:
                 self.wait(left)
+        out = ROOT / "out"
+        out.mkdir(exist_ok=True)
+        (out / f"{self.ep['slug']}_sfx.json").write_text(json.dumps(self.cues))
+
+    def sfx(self, name, gain=1.0, offset=0.0):
+        """Log a sound effect at the current animation time (mixed in by make_short.py)."""
+        self.cues.append((round(self.renderer.time + offset, 3), name, gain))
 
     # ── shared pieces ────────────────────────────────────────────────────
     def title_slam(self, stage):
@@ -138,6 +146,7 @@ class EpisodeShort(Scene):
             chip = label_chip(tag, S.CYAN).move_to(P(0, 2.95))
             items.append(chip)
             self.play(FadeIn(chip, shift=DOWN * 0.2), run_time=0.3)
+        self.sfx("whoosh", 0.45)
         self.play(*[Create(p) for p in c.parts], FadeIn(c.labels), run_time=0.8)
         self.play(*[Create(w) for w in c.wires], run_time=1.0, rate_func=smooth)
         if flow and c.loops:
@@ -151,6 +160,7 @@ class EpisodeShort(Scene):
                 dots.set_z_index(3)
                 self.add(dots, tr)
             self.add(halo)
+            self.sfx("power_on", 0.9); self.sfx("hum_long", 0.7)
             self.play(c.wires.animate.set_stroke(S.WIRE, 5), FadeIn(halo), *[FadeIn(g, scale=0.6) for g in glows],
                       run_time=0.6)
             items += [halo, *glows, *[f[0] for f in flows]]
@@ -177,6 +187,7 @@ class EpisodeShort(Scene):
                          for _ in range(2)])
         pic.scale(1.12)
         self.add(halo, pic)
+        self.sfx("whoosh", 0.7)
         # frame one: the part settles in while the first energy ring travels outwards
         self.play(pic.animate.scale(1 / 1.12), halo.animate.scale(1.12),
                   rings[0].animate.scale(4.2).set_stroke(opacity=0), run_time=0.9, rate_func=rate_functions.ease_out_cubic)
@@ -184,6 +195,7 @@ class EpisodeShort(Scene):
                          for w, o in ((0.8, 0.04), (0.4, 0.07), (0.12, 0.16))]).rotate(-20 * DEGREES)
         sweep.move_to(pic.get_left() + LEFT * 1.0)
         self.add(sweep)
+        self.sfx("impact", 0.55); self.sfx("shimmer", 0.8)
         self.play(self.title_reveal(), sweep.animate.move_to(pic.get_right() + RIGHT * 1.0),
                   rings[1].animate.scale(4.2).set_stroke(opacity=0), run_time=0.8, rate_func=smooth)
         self.remove(sweep, rings)
@@ -210,6 +222,7 @@ class EpisodeShort(Scene):
         sh = b["show"]
         pic = PARTS.picture(sh["part"])
         pic.scale_to_fit_width(min(6.4, pic.width)).move_to(P(0, 1.0))
+        self.sfx("whoosh", 0.5)
         self.play(FadeIn(pic, shift=LEFT * 1.5), run_time=0.6, rate_func=smooth)
         extras = []
         for lab in sh.get("labels", []):
@@ -220,6 +233,7 @@ class EpisodeShort(Scene):
             chip.move_to(P(side * 2.05, lab.get("y", -1.0)))
             line = VGroup(Line(chip.get_edge_center(-side * LEFT if side < 0 else LEFT), target, stroke_color=col, stroke_width=4),
                           Dot(target, radius=0.08, color=col))
+            self.sfx("pop", 0.6, 0.1)
             self.play(Create(line), FadeIn(chip, shift=UP * 0.2), run_time=0.5)
             extras += [chip, line]
         self.wait_until(t0, d, 0.45)
@@ -235,6 +249,7 @@ class EpisodeShort(Scene):
             items.append(chip)
             self.play(FadeIn(chip, shift=DOWN * 0.2), run_time=0.3)
         glow = glow_disc(PARTS.colour(sh["part"]), 2.2, 12, 0.07).move_to(sym)
+        self.sfx("whoosh", 0.45)
         self.play(FadeIn(glow), Create(sym), run_time=1.0)
         items.append(glow)
         for pin, text in sh.get("pins", {}).items():
@@ -242,10 +257,12 @@ class EpisodeShort(Scene):
                 break
             p = sym.pin(pin)
             t = H(text, 96, S.YELLOW).move_to(p + (p - sym.get_center()) / max(np.linalg.norm(p - sym.get_center()), 1e-6) * 0.6)
+            self.sfx("pop_hi", 0.5)
             self.play(FadeIn(t, scale=1.6), run_time=0.3)
             items.append(t)
         for i, note in enumerate(sh.get("notes", [])):
             n = label_chip(note, S.YELLOW).move_to(P(0, -1.2 - i * 0.75))
+            self.sfx("pop", 0.55)
             self.play(FadeIn(n, shift=UP * 0.2), run_time=0.35)
             items.append(n)
         self.wait_until(t0, d, 0.45)
@@ -273,6 +290,7 @@ class EpisodeShort(Scene):
             vis = (PARTS.picture(spec["part"]) if spec.get("picture") else PARTS.symbol(spec["part"]))
             vis.scale_to_fit_width(min(2.8, vis.width)).move_to(P(x, 0.2))
             sub = B(spec.get("note", ""), 24, S.TEXT).move_to(P(x, -1.55)) if spec.get("note") else VGroup()
+            self.sfx("pop", 0.6)
             self.play(FadeIn(card, scale=0.9), FadeIn(ttl), Create(vis), FadeIn(sub), run_time=0.7)
             cards += [card, ttl, vis, sub]
             if side == "left":
@@ -289,9 +307,11 @@ class EpisodeShort(Scene):
         box = RoundedRectangle(width=eq.width + 0.8, height=eq.height + 0.7, corner_radius=0.3, stroke_color=S.YELLOW,
                                stroke_width=3, fill_color=S.YELLOW, fill_opacity=0.06).move_to(eq)
         items = [eq, box]
+        self.sfx("impact", 0.4)
         self.play(Create(box), Write(eq), run_time=0.9)
         if sh.get("note"):
             n = label_chip(sh["note"], S.CYAN).next_to(box, DOWN, buff=0.45)
+            self.sfx("pop", 0.55)
             self.play(FadeIn(n, shift=UP * 0.2), run_time=0.35)
             items.append(n)
         self.wait_until(t0, d, 0.45)
@@ -303,6 +323,7 @@ class EpisodeShort(Scene):
         nxt_ep = next_episode(self.ep["slug"]) or {"slug": "wire", "name": "MORE PARTS", "part": "wire"}
         dim = Rectangle(width=9, height=FH + 1, stroke_width=0, fill_color="#02040A", fill_opacity=0)
         self.add(dim)
+        self.sfx("whoosh_down", 0.6)
         self.play(FadeOut(self.header, shift=UP * 0.3), dim.animate.set_fill(opacity=0.45), run_time=0.6, rate_func=smooth)
 
         nxt = Text("N E X T   T I M E", font=S.BODY_FONT, weight=BOLD, font_size=30, color=S.MUTED).move_to(P(0, 4.15))
@@ -314,6 +335,7 @@ class EpisodeShort(Scene):
         sym = PARTS.symbol(nxt_ep["part"])
         sym.scale_to_fit_width(min(3.4, sym.width * 1.7)).move_to(P(0, 2.5))
         cg = glow_disc(col, 1.3, 12, 0.05).move_to(sym)
+        self.sfx("riser", 0.6)
         self.play(Create(sym), FadeIn(cg, scale=0.5), run_time=0.7)
 
         name = H(nxt_ep["name"], 160, col).move_to(P(0, 0.55))
@@ -322,8 +344,10 @@ class EpisodeShort(Scene):
         name_glow = name.copy().set_fill(opacity=0).set_stroke(col, 12, 0.06)
         sweep = VGroup(*[Rectangle(width=w, height=2.4, stroke_width=0, fill_color=WHITE, fill_opacity=o)
                          for w, o in ((0.9, 0.05), (0.45, 0.09), (0.15, 0.22))]).rotate(-18 * DEGREES).move_to(P(-4.6, 0.55))
+        self.sfx("impact", 0.7)
         self.play(FadeIn(name, scale=1.2), FadeIn(name_glow), run_time=0.5, rate_func=rush_from)
         self.add(sweep)
+        self.sfx("shimmer", 0.7)
         self.play(sweep.animate.move_to(P(4.6, 0.55)), run_time=0.65, rate_func=smooth)
         self.remove(sweep)
 
@@ -333,6 +357,7 @@ class EpisodeShort(Scene):
         btn_t = B("SUBSCRIBE", 50, WHITE)
         btn_glow = glow_disc("#FF1E1E", 1.5, 10, 0.05).stretch(1.9, 0)
         sub = VGroup(btn_glow, btn, shine, btn_t).move_to(P(0, -1.55))
+        self.sfx("pop_hi", 0.7)
         self.play(FadeIn(sub, scale=0.4), run_time=0.5, rate_func=rate_functions.ease_out_back)
 
         # the mouse glides in on a curve and lands ON the button, hovers, clicks
@@ -343,6 +368,7 @@ class EpisodeShort(Scene):
         self.play(FadeIn(cur, shift=UP * 0.2), run_time=0.2)
         self.play(UpdateFromAlphaFunc(cur, lambda m, a: point_cursor(m, path.point_from_proportion(smooth(a)))), run_time=0.85)
         self.play(sub.animate.scale(1.05), run_time=0.15)
+        self.sfx("click", 1.0)
         self.play(cur.animate.scale(0.82, about_point=cur.tip.get_center()), sub.animate.scale(0.92 / 1.05), run_time=0.08)
         ripple = Circle(radius=0.15, stroke_color=WHITE, stroke_width=6).move_to(target)
         sparks = VGroup(*[Line(ORIGIN, 0.28 * np.array([np.cos(a), np.sin(a), 0]), stroke_color=c, stroke_width=5)
@@ -351,6 +377,7 @@ class EpisodeShort(Scene):
         self.play(cur.animate.scale(1 / 0.82, about_point=cur.tip.get_center()), sub.animate.scale(1 / 0.92),
                   ripple.animate.scale(6).set_stroke(opacity=0), sparks.animate.scale(2.0).set_opacity(0), run_time=0.35)
         done_t = B("SUBSCRIBED", 46, "#D6DBE6").move_to(btn.get_center())
+        self.sfx("success", 0.7)
         self.play(btn.animate.set_fill("#2A3247"), shine.animate.set_fill(opacity=0.05),
                   FadeOut(btn_glow), Transform(btn_t, done_t), run_time=0.3)
 
@@ -358,12 +385,15 @@ class EpisodeShort(Scene):
         bell = bell_icon().scale(0.95)
         bell_bg = Circle(radius=0.62, stroke_width=0, fill_color="#2A3247", fill_opacity=1)
         bell_g = VGroup(bell_bg, bell).move_to(P(2.35, -1.55))
+        self.sfx("pop", 0.5)
         self.play(sub.animate.shift(LEFT * 0.7), FadeIn(bell_g, shift=LEFT * 0.4, scale=0.6),
                   cur.animate.shift(LEFT * 0.7), run_time=0.4)
         bt = bell_g.get_center() + P(0.05, -0.05)
         self.play(cur.animate.shift(bt - cur.tip.get_center()), run_time=0.45, rate_func=smooth)
+        self.sfx("click", 1.0)
         self.play(cur.animate.scale(0.82, about_point=cur.tip.get_center()), run_time=0.08)
         ring2 = Circle(radius=0.62, stroke_color=S.YELLOW, stroke_width=5).move_to(bell_g)
+        self.sfx("bell", 1.0, 0.04)
         self.play(cur.animate.scale(1 / 0.82, about_point=cur.tip.get_center()), bell_bg.animate.set_fill(S.YELLOW),
                   bell.animate.set_fill("#1A1F2E"), ring2.animate.scale(1.8).set_stroke(opacity=0), run_time=0.3)
         self.play(ring_bell(bell), run_time=1.5)
@@ -382,8 +412,11 @@ class EpisodeShort(Scene):
                     Dot(P(-1.2, -0.25), radius=0.07, color="#FFB070"))
         l2 = VGroup(Line(ins.get_left(), P(-0.55, -0.95), stroke_color="#7FB2FF", stroke_width=4),
                     Dot(P(-0.55, -0.95), radius=0.07, color="#7FB2FF"))
+        self.sfx("whoosh", 0.45)
         self.play(FadeIn(xs, scale=0.6), run_time=0.7, rate_func=smooth)
+        self.sfx("pop", 0.6)
         self.play(Create(l1), FadeIn(cu, shift=LEFT * 0.3), run_time=0.5)
+        self.sfx("pop", 0.6)
         self.play(Create(l2), FadeIn(ins, shift=LEFT * 0.3), run_time=0.5)
         self.play(Rotate(xs[3], angle=PI / 6), run_time=max(0.3, d - 3.0), rate_func=smooth)
         self.play(FadeOut(VGroup(wire, xs, cu, ins, l1, l2), shift=UP * 0.4), run_time=0.45)
@@ -405,6 +438,7 @@ class EpisodeShort(Scene):
         lg = glow_disc(S.YELLOW, 1.15, 12, 0.2).move_to(lamp)
         lg.set_z_index(1); lamp.set_z_index(2); bat.set_z_index(2); dots.set_z_index(3)
         self.add(halo, dots, tr)
+        self.sfx("power_on", 0.9); self.sfx("hum_long", 0.7)
         self.play(wires.animate.set_stroke(S.WIRE, 5), FadeIn(halo), FadeIn(lg, scale=0.6),
                   lamp.body.animate.set_stroke(S.YELLOW), run_time=0.6)
         self.wait(max(0, d - 3.0))
@@ -422,12 +456,16 @@ class EpisodeShort(Scene):
         lno = B("NOT CONNECTED", 26, S.RED).move_to(P(2.0, 1.85))
         tick = Text("✓", font=S.BODY_FONT, font_size=76, color=S.GREEN).move_to(P(-2.0, -1.5))
         cross = Text("✕", font=S.BODY_FONT, font_size=66, color=S.RED).move_to(P(2.0, -1.65))
+        self.sfx("whoosh", 0.45)
         self.play(FadeIn(card_l, scale=0.9), FadeIn(lyes), Create(yes), run_time=0.7)
         ring = Circle(radius=0.15, stroke_color=S.GREEN, stroke_width=5).move_to(dot)
+        self.sfx("success", 0.8)
         self.play(GrowFromCenter(dot), FadeIn(tick, scale=1.6), run_time=0.45)
         self.play(ring.animate.scale(4).set_stroke(opacity=0), run_time=0.5)
         self.wait(max(0, d * 0.45 - 1.65))
+        self.sfx("whoosh", 0.45)
         self.play(FadeIn(card_r, scale=0.9), FadeIn(lno), Create(no), run_time=0.7)
+        self.sfx("error", 0.8)
         self.play(FadeIn(cross, scale=1.6), Wiggle(cross, scale_value=1.2), run_time=0.6)
         self.wait(max(0, d * 0.55 - 1.75))
         self.play(FadeOut(VGroup(card_l, card_r, yes, dot, no, lyes, lno, tick, cross, ring)), run_time=0.45)
@@ -437,7 +475,9 @@ class EpisodeShort(Scene):
         thick = copper_wire(5.6, r=0.42, strip=0.9, colour=("#6FB0FF", "#1E4FCC")).move_to(P(0, -0.85))
         lt = label_chip("THIN  ·  more resistance", S.RED).next_to(thin, UP, buff=0.35)
         lk = label_chip("THICK  ·  less resistance", S.GREEN).next_to(thick, UP, buff=0.4)
+        self.sfx("whoosh", 0.45)
         self.play(FadeIn(thin, shift=RIGHT * 1.5), FadeIn(lt), run_time=0.55)
+        self.sfx("whoosh", 0.45)
         self.play(FadeIn(thick, shift=RIGHT * 1.5), FadeIn(lk), run_time=0.55)
         p1 = Line(thin.get_left() + RIGHT * 0.2, thin.get_right() + LEFT * 0.2)
         d1, t1 = flow_dots(p1, 5, 0.22, S.YELLOW, 0.045)
@@ -445,6 +485,7 @@ class EpisodeShort(Scene):
                           6, 0.22, S.YELLOW, 0.05) for yy in (-0.22, 0, 0.22)]
         heat = glow_disc("#FF5A1A", 1.0, 10, 0.25).stretch_to_fit_width(6.2).stretch_to_fit_height(1.0).move_to(thin)
         self.add(d1, t1, *[x for r in rows for x in r])
+        self.sfx("sizzle", 0.8)
         self.play(FadeIn(heat), thin[0].animate.set_fill(["#FFF1B0", "#FF7A1A", "#C73A00"]),
                   run_time=max(0.5, d - 1.95))
         stop_flow(self, d1, t1)
