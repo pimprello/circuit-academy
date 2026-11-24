@@ -20,7 +20,34 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  voice:
+    # The narrator (Kokoro needs Python 3.10-3.12) is recorded on a plain runner - no apt needed.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.cache/huggingface
+          key: voice-v1-${{ hashFiles('requirements-voice.txt') }}
+      - name: Voice packages (CPU-only torch)
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements-voice.txt
+      - name: Record narration
+        run: python make_voice.py ${{ inputs.episodes || 'wire cell' }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: narration
+          path: narration/
+
   build:
+    needs: voice
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     # Manim's own image already has ffmpeg (with libass for captions), Cairo and Pango,
@@ -40,16 +67,12 @@ jobs:
       - uses: actions/checkout@v5
       - name: Fonts
         run: mkdir -p ~/.fonts && cp assets/fonts/*.ttf assets/fonts/*.otf ~/.fonts/ && fc-cache -f
-      - uses: actions/cache@v4
+      - uses: actions/download-artifact@v4
         with:
-          path: |
-            ~/.cache/pip
-            ~/.cache/huggingface
-          key: deps-v2-${{ hashFiles('requirements.txt') }}
-      - name: Python packages (CPU-only torch for the Kokoro voice)
-        run: |
-          pip install --break-system-packages torch --index-url https://download.pytorch.org/whl/cpu || pip install torch --index-url https://download.pytorch.org/whl/cpu
-          pip install --break-system-packages -r requirements.txt || pip install -r requirements.txt
+          name: narration
+          path: narration/
+      - name: Python packages
+        run: pip install -r requirements.txt || pip install --break-system-packages -r requirements.txt
       - name: Make the videos
         run: |
           for e in ${{ inputs.episodes || 'wire cell' }}; do python make_short.py "$e"; done
